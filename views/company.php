@@ -10,7 +10,7 @@
 		
 		$_SESSION['message'] ='';
 	}
-
+ 
 	if( $this->parent->user->is_company ){
 						
 		$company_name = ucfirst(get_bloginfo('name'));
@@ -192,10 +192,10 @@
 									echo '</div>';
 									
 									// get table
-									
+
 									$this->parent->api->get_table(
 									
-										$this->parent->urls->api . 'ltple-company/v1/users/', 
+										$this->parent->server->api . 'ltple-prepaid/v1/users/'.$this->parent->ltple_encrypt_uri($this->parent->user->ID), 
 										array(
 										
 											array(

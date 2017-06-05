@@ -251,36 +251,37 @@ class LTPLE_Company extends LTPLE_Client_Object {
 		}
 	}
 	
-	
 	public function get_company_users() {
 		
-		$q 	= get_users();
-		
 		$company_users = [];
-
-		foreach($q as $u){
-			
-			$user = $u->data;
-			
-			$item = [];
-			
-			if( !empty( $user->display_name ) ){
-				
-				$item['name'] = $user->display_name;
-			}
-			else{
-				
-				$item['name'] = $user->user_nicename;
-			}
-			
-			$item['email'] = $user->user_email;
-			
-			
-
-			$company_users[] = $item;
-		}
-
 		
+		if( $this->parent->user->is_company ){
+		
+			$q 	= get_users();
+
+			foreach($q as $u){
+				
+				$user = $u->data;
+				
+				$item = [];
+				
+				if( !empty( $user->display_name ) ){
+					
+					$item['name'] = $user->display_name;
+				}
+				else{
+					
+					$item['name'] = $user->user_nicename;
+				}
+				
+				$item['email'] = $user->user_email;
+				
+				
+
+				$company_users[] = $item;
+			}
+
+		}
 		
 		return $company_users;
 	}
