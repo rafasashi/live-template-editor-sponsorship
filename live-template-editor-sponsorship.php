@@ -1,9 +1,9 @@
 <?php
 /*
- * Plugin Name: Live Template Editor Company
+ * Plugin Name: Live Template Editor Sponsorship
  * Version: 1.0
  * Plugin URI: https://github.com/rafasashi
- * Description: Another Live Template Editor company.
+ * Description: Another Live Template Editor sponsorship.
  * Author: Rafasashi
  * Author URI: https://github.com/rafasashi
  * Requires at least: 4.6
@@ -25,20 +25,20 @@
 	if ( ! defined( 'ABSPATH' ) ) exit;
 	
 	/**
-	 * Returns the main instance of LTPLE_Company to prevent the need to use globals.
+	 * Returns the main instance of LTPLE_Sponsorship to prevent the need to use globals.
 	 *
 	 * @since  1.0.0
-	 * @return object LTPLE_Company
+	 * @return object LTPLE_Sponsorship
 	 */
-	function LTPLE_Company ( $version = '1.0.0' ) {
+	function LTPLE_Sponsorship ( $version = '1.0.0' ) {
 		
 		$instance = LTPLE_Client::instance( __FILE__, $version );
 		
-		if ( empty( $instance->company ) ) {
+		if ( empty( $instance->sponsorship ) ) {
 			
-			$instance->company = new stdClass();
+			$instance->sponsorship = new stdClass();
 			
-			$instance->company = LTPLE_Company::instance( __FILE__, $instance, $version );
+			$instance->sponsorship = LTPLE_Sponsorship::instance( __FILE__, $instance, $version );
 		}
 
 		return $instance;
@@ -74,11 +74,11 @@
 	
 		if( $mode == '-dev' ){
 			
-			LTPLE_Company('1.1.1');
+			LTPLE_Sponsorship('1.1.1');
 		}
 		else{
 			
-			LTPLE_Company('1.1.0');
+			LTPLE_Sponsorship('1.1.0');
 		}		
 	});
 	

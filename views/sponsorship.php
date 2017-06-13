@@ -11,9 +11,9 @@
 		$_SESSION['message'] ='';
 	}
  
-	if( $this->parent->user->is_company ){
+	if( $this->parent->user->is_sponsorship ){
 						
-		$company_name = ucfirst(get_bloginfo('name'));
+		$sponsorship_name = ucfirst(get_bloginfo('name'));
 	
 		$tab = 1; //accordion tabs
 
@@ -25,7 +25,7 @@
 			
 				echo'<ul class="nav nav-tabs tabs-left">';
 					
-					echo'<li class="gallery_type_title">Company Program</li>';
+					echo'<li class="gallery_type_title">Sponsorship Program</li>';
 					
 					//echo'<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>';
 					
@@ -55,7 +55,7 @@
 						
 							echo'<p>';
 							
-								echo 'Your account snapshot licenses and company information';
+								echo 'Your account snapshot licenses and sponsorship information';
 							
 							echo'</p>';	
 
@@ -136,7 +136,7 @@
 											
 												$this->admin->display_field( array(
 												
-													'id' 			=> 'companyAction',
+													'id' 			=> 'sponsorshipAction',
 													'description'	=> '',
 													'type'			=> 'select',
 													'options'		=> array(
@@ -150,7 +150,7 @@
 											
 												$this->admin->display_field( array(
 												
-													'id' 			=> 'companyEmails',
+													'id' 			=> 'sponsorshipEmails',
 													'label'			=> 'Add emails',
 													'description'	=> '',
 													'placeholder'	=> '',
@@ -270,7 +270,7 @@
 		
 			echo '<div class="alert alert-warning">';
 			
-				echo 'You need to be a member of the Company Program to access this area. Please contact us.';
+				echo 'You need to be a member of the Sponsorship Program to access this area. Please contact us.';
 			
 			echo '</div>';
 			

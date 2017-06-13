@@ -2,10 +2,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class LTPLE_Company_Settings {
+class LTPLE_Sponsorship_Settings {
 
 	/**
-	 * The single instance of LTPLE_Company_Settings.
+	 * The single instance of LTPLE_Sponsorship_Settings.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -41,7 +41,7 @@ class LTPLE_Company_Settings {
 		$this->parent = $parent;
 		
 		$this->plugin 		 	= new stdClass();
-		$this->plugin->slug  	= 'live-template-editor-company';
+		$this->plugin->slug  	= 'live-template-editor-sponsorship';
 		
 		add_action('ltple_plugin_settings', array($this, 'plugin_info' ) );
 		
@@ -52,13 +52,13 @@ class LTPLE_Company_Settings {
 	
 	public function plugin_info(){
 		
-		$this->parent->settings->addons['company-program'] = array(
+		$this->parent->settings->addons['sponsorship-program'] = array(
 			
-			'title' 		=> 'Company Program',
-			'addon_link' 	=> 'https://github.com/rafasashi/live-template-editor-company',
-			'addon_name' 	=> 'live-template-editor-company',
-			'source_url' 	=> 'https://github.com/rafasashi/live-template-editor-company/archive/master.zip',
-			'description'	=> 'Company program including management and purchase of licenses in bulk.',
+			'title' 		=> 'Sponsorship Program',
+			'addon_link' 	=> 'https://github.com/rafasashi/live-template-editor-sponsorship',
+			'addon_name' 	=> 'live-template-editor-sponsorship',
+			'source_url' 	=> 'https://github.com/rafasashi/live-template-editor-sponsorship/archive/master.zip',
+			'description'	=> 'Sponsorship program including management and purchase of licenses in bulk.',
 			'author' 		=> 'Rafasashi',
 			'author_link' 	=> 'https://profiles.wordpress.org/rafasashi/',
 		);		
@@ -73,15 +73,15 @@ class LTPLE_Company_Settings {
 		$settings = [];
 		
 		/*
-		$settings['company'] = array(
+		$settings['sponsorship'] = array(
 		
-			'title'					=> __( 'Company', $this->plugin->slug ),
-			'description'			=> __( 'Company settings', $this->plugin->slug ),
+			'title'					=> __( 'Sponsorship', $this->plugin->slug ),
+			'description'			=> __( 'Sponsorship settings', $this->plugin->slug ),
 			'fields'				=> array(		
 				array(
-					'id' 			=> 'company_banners',
-					'name' 			=> 'company_banners',
-					'label'			=> __( 'Company banners' , $this->plugin->slug ),
+					'id' 			=> 'sponsorship_banners',
+					'name' 			=> 'sponsorship_banners',
+					'label'			=> __( 'Sponsorship banners' , $this->plugin->slug ),
 					'description'	=> '',
 					'inputs'		=> 'string',
 					'type'			=> 'key_value',
@@ -122,10 +122,10 @@ class LTPLE_Company_Settings {
 		/*
 		add_submenu_page(
 			'live-template-editor-client',
-			__( 'Company Commissions', $this->plugin->slug ),
-			__( 'Company Commissions', $this->plugin->slug ),
+			__( 'Sponsorship Commissions', $this->plugin->slug ),
+			__( 'Sponsorship Commissions', $this->plugin->slug ),
 			'edit_pages',
-			'edit.php?post_type=company-commission'
+			'edit.php?post_type=sponsorship-commission'
 		);
 		*/
 		

@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class LTPLE_Company extends LTPLE_Client_Object {
+class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	
 	/**
 	 * The single instance of LTPLE_Addon.
@@ -52,18 +52,18 @@ class LTPLE_Company extends LTPLE_Client_Object {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );		
 		
-		$this->settings = new LTPLE_Company_Settings( $this->parent );
+		$this->settings = new LTPLE_Sponsorship_Settings( $this->parent );
 		
-		$this->admin 	= new LTPLE_Company_Admin_API( $this );
+		$this->admin 	= new LTPLE_Sponsorship_Admin_API( $this );
 		
 		/*
-		$this->parent->register_post_type( 'company-commission', __( 'Company commissions', 'live-template-editor-client' ), __( 'Company commission', 'live-template-editor-client' ), '', array(
+		$this->parent->register_post_type( 'sponsorship-commission', __( 'Sponsorship commissions', 'live-template-editor-client' ), __( 'Sponsorship commission', 'live-template-editor-client' ), '', array(
 
 			'public' 				=> false,
 			'publicly_queryable' 	=> false,
 			'exclude_from_search' 	=> true,
 			'show_ui' 				=> true,
-			'show_in_menu'		 	=> 'company-commission',
+			'show_in_menu'		 	=> 'sponsorship-commission',
 			'show_in_nav_menus' 	=> true,
 			'query_var' 			=> true,
 			'can_export' 			=> true,
@@ -86,17 +86,17 @@ class LTPLE_Company extends LTPLE_Client_Object {
 			
 				'commission_amount',
 				__( 'Amount', 'live-template-editor-client' ), 
-				array("company-commission"),
+				array("sponsorship-commission"),
 				'side'
 			);
 			*/
 		});
 		
-		add_action( 'ltple_loaded', array( $this, 'init_company' ));
+		add_action( 'ltple_loaded', array( $this, 'init_sponsorship' ));
 
 		add_action( 'ltple_list_programs', function(){
 			
-			$this->parent->programs->list['company'] = 'Company';
+			$this->parent->programs->list['sponsorship'] = 'Sponsorship';
 		});
 
 		add_action( 'ltple_campaign_triggers', function(){
@@ -105,7 +105,7 @@ class LTPLE_Company extends LTPLE_Client_Object {
 			
 				$this->get_terms( $this->parent->campaign->taxonomy, array( 
 							
-					'company-approved' 	=> 'Company Approved',
+					'sponsorship-approved' 	=> 'Sponsorship Approved',
 				))			
 			
 			,$this->parent->campaign->triggers);
@@ -113,9 +113,9 @@ class LTPLE_Company extends LTPLE_Client_Object {
 		
 		add_action( 'ltple_editor', function(){
 		
-			if( isset($_GET['company']) ){
+			if( isset($_GET['sponsorship']) ){
 
-				include($this->views . $this->parent->_dev .'/company.php');
+				include($this->views . $this->parent->_dev .'/sponsorship.php');
 				
 				$this->parent->viewIncluded = true;
 			}
@@ -125,15 +125,15 @@ class LTPLE_Company extends LTPLE_Client_Object {
 			
 			echo'<li style="position:relative;">';
 				
-				echo '<a href="'. $this->parent->urls->editor .'?company"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> My Company</a>';
+				echo '<a href="'. $this->parent->urls->editor .'?sponsorship"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> My Sponsorship</a>';
 
 			echo'</li>';
 		});
 	}
 	
-	public function init_company(){
+	public function init_sponsorship(){
 		
-		$this->parent->user->is_company = $this->parent->programs->has_program('company', $this->parent->user->ID, $this->parent->user->programs);
+		$this->parent->user->is_sponsorship = $this->parent->programs->has_program('sponsorship', $this->parent->user->ID, $this->parent->user->programs);
 		
 		if( is_admin() ){
 
@@ -143,11 +143,11 @@ class LTPLE_Company extends LTPLE_Client_Object {
 		
 				// add tab in user panel
 				
-				add_action( 'ltple_user_tab', array($this, 'get_company_tab' ) );
+				add_action( 'ltple_user_tab', array($this, 'get_sponsorship_tab' ) );
 				
 				if( $this->parent->users->view == 'companies' ){
 				
-					// filter company users
+					// filter sponsorship users
 					
 					add_filter( 'pre_get_users', array( $this, 'filter_companies') );
 
@@ -168,8 +168,8 @@ class LTPLE_Company extends LTPLE_Client_Object {
 				
 				// save user programs
 				
-				add_action( 'personal_options_update', array( $this, 'save_user_company' ) );
-				add_action( 'edit_user_profile_update', array( $this, 'save_user_company' ) );
+				add_action( 'personal_options_update', array( $this, 'save_user_sponsorship' ) );
+				add_action( 'edit_user_profile_update', array( $this, 'save_user_sponsorship' ) );
 			}
 		}
 		else{
@@ -178,10 +178,10 @@ class LTPLE_Company extends LTPLE_Client_Object {
 			
 			add_action( 'rest_api_init', function () {
 				
-				register_rest_route( 'ltple-company/v1', '/users', array(
+				register_rest_route( 'ltple-sponsorship/v1', '/users', array(
 					
 					'methods' 	=> 'GET',
-					'callback' 	=> array($this,'get_company_users'),
+					'callback' 	=> array($this,'get_sponsorship_users'),
 				) );
 			} );
 		}
@@ -196,13 +196,13 @@ class LTPLE_Company extends LTPLE_Client_Object {
 			array(
 			
 				'key' 		=> $this->parent->_base . 'user-programs',
-				'value' 	=> 'company',
+				'value' 	=> 'sponsorship',
 				'compare' 	=> 'LIKE'
 			),
 		));
 	}
 	
-	public function get_company_tab(){
+	public function get_sponsorship_tab(){
 		
 		echo '<a class="nav-tab ' . ( $this->parent->users->view == 'companies' ? 'nav-tab-active' : '' ) . '" href="users.php?ltple_view=companies">Companies</a>';
 	}
@@ -240,22 +240,22 @@ class LTPLE_Company extends LTPLE_Client_Object {
 		return $row;
 	}	
 
-	public function save_user_company( $user_id ) {
+	public function save_user_sponsorship( $user_id ) {
 		
 		if(isset($_POST[$this->parent->_base . 'user-programs'])){
 
-			if( in_array( 'company', $_POST[$this->parent->_base . 'user-programs']) ){
+			if( in_array( 'sponsorship', $_POST[$this->parent->_base . 'user-programs']) ){
 				
-				//$this->parent->email->schedule_trigger( 'company-approved',  $user_id);
+				//$this->parent->email->schedule_trigger( 'sponsorship-approved',  $user_id);
 			}
 		}
 	}
 	
-	public function get_company_users() {
+	public function get_sponsorship_users() {
 		
-		$company_users = [];
+		$sponsorship_users = [];
 		
-		if( $this->parent->user->is_company ){
+		if( $this->parent->user->is_sponsorship ){
 		
 			$q 	= get_users();
 
@@ -278,12 +278,12 @@ class LTPLE_Company extends LTPLE_Client_Object {
 				
 				
 
-				$company_users[] = $item;
+				$sponsorship_users[] = $item;
 			}
 
 		}
 		
-		return $company_users;
+		return $sponsorship_users;
 	}
 	
 	/**

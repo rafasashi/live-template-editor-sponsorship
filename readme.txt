@@ -1,4 +1,4 @@
-=== Live Template Editor Company ===
+=== Live Template Editor Sponsorship ===
 Contributors: rafasashi
 Tags: editor, style, profiler
 Requires at least: 4.6
@@ -9,11 +9,11 @@ LTPLE template editor
 
 == Description ==
 
-Live Template Editor Company allows you to edit template profils.
+Live Template Editor Sponsorship allows you to edit template profils.
 
 == Installation ==
 
-Installing "Live Template Editor Company" can be done either by searching for "Live Template Editor Company" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
+Installing "Live Template Editor Sponsorship" can be done either by searching for "Live Template Editor Sponsorship" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
 
 1. Download the plugin via WordPress.org
 2. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard

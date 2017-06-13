@@ -1,2 +1,2 @@
-# live-template-editor-company
-Company - Company Program for Live Template Editor
+# live-template-editor-sponsorship
+Sponsorship - Sponsorship Program for Live Template Editor
