@@ -130,10 +130,10 @@ class LTPLE_Sponsorship_Settings {
 		*/
 		
 		add_users_page( 
-			'All Companies', 
-			'All Companies', 
+			'All Sponsors', 
+			'All Sponsors', 
 			'edit_pages',
-			'users.php?' . $this->parent->_base .'view=companies'
+			'users.php?' . $this->parent->_base .'view=sponsors'
 		);
 	}
 }

@@ -145,11 +145,11 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 				
 				add_action( 'ltple_user_tab', array($this, 'get_sponsorship_tab' ) );
 				
-				if( $this->parent->users->view == 'companies' ){
+				if( $this->parent->users->view == 'sponsors' ){
 				
 					// filter sponsorship users
 					
-					add_filter( 'pre_get_users', array( $this, 'filter_companies') );
+					add_filter( 'pre_get_users', array( $this, 'filter_sponsors') );
 
 					// custom users columns
 					
@@ -187,7 +187,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		}
 	}
 	
-	public function filter_companies( $query ) {
+	public function filter_sponsors( $query ) {
 
 		// alter the user query to add my meta_query
 		
@@ -204,10 +204,10 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	
 	public function get_sponsorship_tab(){
 		
-		echo '<a class="nav-tab ' . ( $this->parent->users->view == 'companies' ? 'nav-tab-active' : '' ) . '" href="users.php?ltple_view=companies">Companies</a>';
+		echo '<a class="nav-tab ' . ( $this->parent->users->view == 'sponsors' ? 'nav-tab-active' : '' ) . '" href="users.php?ltple_view=sponsors">Sponsors</a>';
 	}
 	
-	public function update_companies_table($column) {
+	public function update_sponsors_table($column) {
 		
 		$column=[];
 		$column["cb"]			= '<input type="checkbox" />';
@@ -217,7 +217,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		return $column;
 	}
 	
-	public function modify_companies_table_row($val, $column_name, $user_id) {
+	public function modify_sponsors_table_row($val, $column_name, $user_id) {
 		
 		if(!isset($this->list->{$user_id})){
 		
