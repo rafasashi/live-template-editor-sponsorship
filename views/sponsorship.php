@@ -21,7 +21,7 @@
 		
 		echo'<div id="media_library">';
 
-			echo'<div class="col-xs-3 col-sm-2">';
+			echo'<div class="col-xs-3 col-sm-2" style="padding:0;">';
 			
 				echo'<ul class="nav nav-tabs tabs-left">';
 					
@@ -37,7 +37,7 @@
 				
 			echo'</div>';
 
-			echo'<div class="col-xs-9 col-sm-10" style="border-left: 1px solid #ddd;background:#fff;padding-top:15px;padding-bottom:15px;min-height:500px;">';
+			echo'<div class="col-xs-9 col-sm-10" style="border-left: 1px solid #ddd;background:#fff;padding-bottom:15px;min-height:500px;">';
 				
 				echo'<div class="tab-content">';
 
@@ -195,7 +195,7 @@
 
 									$this->parent->api->get_table(
 									
-										$this->parent->server->api . 'ltple-prepaid/v1/users/'.$this->parent->ltple_encrypt_uri($this->parent->user->ID), 
+										$this->parent->server->api . 'ltple-sponsored/v1/users/'.$this->parent->ltple_encrypt_uri($this->parent->user->ID), 
 										array(
 										
 											array(
