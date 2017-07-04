@@ -15,7 +15,12 @@
 						
 		$sponsorship_name = ucfirst(get_bloginfo('name'));
 	
-		$tab = 1; //accordion tabs
+		$currentTab = 'licenses';
+	
+		if( !empty($_GET['sponsorship']) ){
+			
+			$currentTab = $_GET['sponsorship'];
+		}
 
 		// ------------- output panel --------------------
 		
@@ -27,11 +32,11 @@
 					
 					echo'<li class="gallery_type_title">Sponsorship Program</li>';
 					
-					//echo'<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>';
+					//echo'<li'.( $currentTab == 'overview' ? ' class="active"' : '' ).'><a href="'.$this->parent->urls->editor . '?sponsorship=overview">Overview</a></li>';
 					
-					echo'<li class="active"><a href="#licenses" data-toggle="tab">Licenses</a></li>';
+					echo'<li'.( $currentTab == 'licenses' ? ' class="active"' : '' ).'><a href="'.$this->parent->urls->editor . '?sponsorship=licenses">Licenses</a></li>';
 					
-					echo'<li class=""><a href="#coupons" data-toggle="tab">Coupons</a></li>';
+					echo'<li'.( $currentTab == 'invitations' ? ' class="active"' : '' ).'><a href="'.$this->parent->urls->editor . '?sponsorship=invitations">Invitations</a></li>';
 
 				echo'</ul>';
 				
@@ -40,223 +45,192 @@
 			echo'<div class="col-xs-9 col-sm-10" style="border-left: 1px solid #ddd;background:#fff;padding-bottom:15px;min-height:500px;">';
 				
 				echo'<div class="tab-content">';
-
-					//overview
+					
 					/*
-					echo'<div class="tab-pane active" id="overview">';
-
-						echo'<div class="bs-callout bs-callout-primary">';
+					if( $currentTab == 'overview' ){
 						
-							echo'<h4>';
+						//overview
+
+						echo'<div class="tab-pane active" id="overview">';
+						
+							echo'<div class="bs-callout bs-callout-primary">';
 							
-								echo'Overview';
+								echo'<h4>';
 								
-							echo'</h4>';
-						
-							echo'<p>';
-							
-								echo 'Your account snapshot licenses and sponsorship information';
-							
-							echo'</p>';	
-
-						echo'</div>';							
-
-						echo'<div class="tab-content row">';
-
-							echo'<div class="col-xs-12">';
-	
-								
-							echo'</div>';
-
-						echo'</div>';
-						
-						echo'<div class="clearfix"></div>';	
-						echo'<hr></hr>';							
-
-						echo'<div class="row">';
-						echo'<div class="col-xs-12">';
-						
-							echo'<div class=" panel panel-default" style="margin-bottom:0;">';
-							
-								echo'<table class="table table-striped table-hover">';
-								
-								echo'<tbody>';
+									echo'Overview';
 									
-									echo'<tr style="font-size:18px;font-weight:bold;">';
-										
-										echo'<td>Invoices</td>';
-										
-										
-									echo'</tr>';
-								
-								echo'</tbody>';
-								
-								echo'</table>';
+								echo'</h4>';
 							
-							echo'</div>';
-							
-						echo'</div>';
-						echo'</div>';						
+								echo'<p>';
+								
+									echo 'List of licenses';
+								
+								echo'</p>';	
 
-					echo'</div>';
+							echo'</div>';							
+
+							echo'<div class="tab-content row">';
+
+								echo'<div class="col-xs-12">';
+
+										// get table of invited people
+
+										$this->parent->api->get_table(
+										
+											$this->parent->urls->api . 'ltple-sponsored/v1/users', 
+											array(
+											
+												array(
+				
+													'field' 	=> 'name',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Name',
+												),
+												array(
+				
+													'field' 	=> 'email',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Email',
+												),
+												array(
+				
+													'field' 	=> 'last_seen',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Seen',
+												),
+											), 
+											$trash		= false,
+											$export		= false,
+											$search		= true,
+											$toggle		= false,
+											$columns	= true,
+											$header		= true,
+											$pagination	= true,
+											$form		= false,
+											$toolbar 	= 'toolbar'
+										);									
+								
+								echo'</div>';
+								
+							echo'</div>';						
+							
+						echo'</div>'; //overview
+						
+					}
 					*/
-					// ref urls
-					
-					echo'<div class="tab-pane active" id="licenses">';
-					
-						echo'<div class="bs-callout bs-callout-primary">';
+					if( $currentTab == 'licenses' ){
 						
-							echo'<h4>';
-							
-								echo'Licenses';
-								
-							echo'</h4>';
+						echo'<div class="tab-pane active" id="licenses">';
 						
-							echo'<p>';
+							echo'<div class="bs-callout bs-callout-primary">';
 							
-								echo 'List of licenses';
-							
-							echo'</p>';	
-
-						echo'</div>';							
-
-						echo'<div class="tab-content row">';
-
-							echo'<div class="col-xs-12">';
+								echo'<h4>';
 								
+									echo'Licenses';
+									
+								echo'</h4>';
+							
+								echo'<p>';
+								
+									echo 'Purchase Licenses in bulk';
+								
+								echo'</p>';	
+
+							echo'</div>';							
+
+							echo'<div class="tab-content row">';
+
+								echo'<div class="col-xs-12">';
+
+										// get table of invited people
+
+										$this->parent->api->get_table(
+										
+											$this->parent->urls->api . 'ltple-sponsored/v1/licenses', 
+											array(
+											
+												array(
+				
+													'field' 	=> 'plan',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Plan',
+												),
+												array(
+				
+													'field' 	=> 'cover',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Cover',
+												),
+												array(
+				
+													'field' 	=> 'description',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Description',
+												),
+												array(
+				
+													'field' 	=> 'licenses',
+													'sortable' 	=> 'true',
+													'content' 	=> 'My licenses',
+												),
+												array(
+				
+													'field' 	=> 'action',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Action',
+												),											
+											), 
+											$trash		= false,
+											$export		= false,
+											$search		= true,
+											$toggle		= false,
+											$columns	= true,
+											$header		= true,
+											$pagination	= true,
+											$form		= false,
+											$toolbar 	= 'toolbar'
+										);									
+								
+								echo'</div>';
+								
+							echo'</div>';						
+							
+						echo'</div>'; //licenses 
+					}
+					elseif( $currentTab == 'invitations' ){
+						
+						echo'<div class="tab-pane active" id="invitations">';
+						
+							echo'<div class="bs-callout bs-callout-primary">';
+							
+								echo'<h4>';
+								
+									echo'Invitations';
+									
+								echo'</h4>';
+							
+								echo'<p>';
+								
+									echo 'Send invitations to people by email';
+								
+								echo'</p>';	
+
+							echo'</div>';							
+
+							echo'<div class="tab-content row">';
+
+								echo'<div class="col-xs-12">';
+									
 									// get import emails
 									
-									echo '<div class="well" style="display:inline-block;width:100%;">';
+									echo $this->parent->email->get_invitation_form('sponsorship');	
 									
-										echo '<div class="col-xs-12 col-md-6">';
-										
-											echo '<h4>Manage Licenses</h4>';
-										
-											echo '<form action="' . $this->parent->urls->current . '" method="post">';
-											
-												$this->admin->display_field( array(
-												
-													'id' 			=> 'sponsorshipAction',
-													'description'	=> '',
-													'type'			=> 'select',
-													'options'		=> array(
-													
-														'importEmails' => 'Import Emails',
-													),
-
-												), $this->parent->user );	
-
-												echo '<h5 style="padding:15px 0 5px 0;font-weight:bold;">CSV list of users</h5>';
-											
-												$this->admin->display_field( array(
-												
-													'id' 			=> 'sponsorshipEmails',
-													'label'			=> 'Add emails',
-													'description'	=> '',
-													'placeholder'	=> '',
-													'default'		=> '',
-													'type'			=> 'textarea',
-													'style'			=> 'width:100%;height:150px;',
-												), $this->parent->user );
-											
-												echo '<button class="btn btn-xs btn-primary pull-right" type="submit">';
-													
-													echo 'Start';
-													
-												echo '</button>';
-											
-											echo '</form>';
-										
-										echo '</div>';
-										
-										echo '<div class="col-xs-12 col-md-6">';
-										
-											echo '<table class="table table-striped table-hover">';
-											
-												echo '<thead>';
-													echo '<tr>';
-														echo '<th><b>Information</b></th>';
-													echo '</tr>';
-												echo '</thead>';
-												
-												echo '<tbody>';
-													echo '<tr>';
-														echo '<td>Copy paste a list of emails separated by comma you want to import.</td>';
-													echo '</tr>';															
-												echo '</tbody>';
-												
-											echo '</table>';			
-										
-										echo '</div>';
-									
-									echo '</div>';
-									
-									// get table
-
-									$this->parent->api->get_table(
-									
-										$this->parent->server->api . 'ltple-sponsored/v1/users/'.$this->parent->ltple_encrypt_uri($this->parent->user->ID), 
-										array(
-										
-											array(
-			
-												'field' 	=> 'name',
-												'sortable' 	=> 'true',
-												'content' 	=> 'Name',
-											),
-											array(
-			
-												'field' 	=> 'email',
-												'sortable' 	=> 'true',
-												'content' 	=> 'Email',
-											),
-										), 
-										$trash		= false,
-										$export		= false,
-										$search		= true,
-										$toggle		= false,
-										$columns	= true,
-										$header		= true,
-										$pagination	= true,
-										$form		= false,
-										$toolbar 	= 'toolbar'
-									);									
-							
-							echo'</div>';
-							
-						echo'</div>';						
-						
-					echo'</div>'; //licenses
-					
-					echo'<div class="tab-pane" id="coupons">';
-					
-						echo'<div class="bs-callout bs-callout-primary">';
-						
-							echo'<h4>';
-							
-								echo'Coupons';
+								echo'</div>';
 								
-							echo'</h4>';
-						
-							echo'<p>';
+							echo'</div>';						
 							
-								echo 'List of available coupons';
-							
-							echo'</p>';	
-
-						echo'</div>';							
-
-						echo'<div class="tab-content row" style="margin:20px;">';
-
-							echo'<div class="col-xs-12">';
-								
-	
-								
-							echo'</div>';
-							
-						echo'</div>';						
-						
-					echo'</div>'; //coupons
+						echo'</div>'; //invitations
+					}
 
 				echo'</div>';
 				

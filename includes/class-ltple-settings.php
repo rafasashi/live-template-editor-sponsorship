@@ -119,15 +119,13 @@ class LTPLE_Sponsorship_Settings {
 		
 		//add menu in wordpress dashboard
 		
-		/*
 		add_submenu_page(
 			'live-template-editor-client',
-			__( 'Sponsorship Commissions', $this->plugin->slug ),
-			__( 'Sponsorship Commissions', $this->plugin->slug ),
+			__( 'Sponsor Invitations', $this->plugin->slug ),
+			__( 'Sponsor Invitations', $this->plugin->slug ),
 			'edit_pages',
-			'edit.php?post_type=sponsorship-commission'
+			'edit.php?post_type=sponsor-invitation'
 		);
-		*/
 		
 		add_users_page( 
 			'All Sponsors', 
