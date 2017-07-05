@@ -19,6 +19,13 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	var $plans 			= NULL;
 	var $invitations 	= NULL;
 	
+	// offline request
+	
+	var $plan_id 		= NULL;
+	var $user_email 	= NULL;
+	var $login_url 		= NULL;
+	var $register_url 	= NULL;
+	
 	/**
 	 * Constructor function
 	 */
@@ -203,6 +210,62 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		}
 		else{
 			
+			//parse offline invitation
+			
+			if( !empty($_GET['su']) ){
+				
+				$request = $this->parent->ltple_decrypt_uri($_GET['su']);
+				
+				list($this->plan_id,$this->user_email,$time) = explode('-', $request);
+			
+				//get user id
+				
+				if($user = get_user_by( 'email', $this->user_email)){
+			
+					if( $user_seen = get_user_meta($user->ID,$this->parent->_base . '_last_seen',true)){
+				
+						$this->login_url = 	add_query_arg( array(
+							
+							'loe' 			=> $this->parent->ltple_encrypt_uri( $this->user_email ),
+							'redirect_to' 	=> $this->parent->urls->current,
+							
+						), wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ));
+					}
+					else{
+						
+						global $wpdb, $wp_hasher;
+						
+						// get reset password url
+						
+						$key = wp_generate_password( 20, false );
+						
+						do_action( 'retrieve_password_key', $user->user_login, $key );
+						
+						// Now insert the key, hashed, into the DB.
+						
+						if ( empty( $wp_hasher ) ) {
+							
+							require_once ABSPATH . WPINC . '/class-phpass.php';
+							
+							$wp_hasher = new PasswordHash( 8, true );
+						}
+						
+						$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
+						
+						$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
+
+						$this->register_url = 	add_query_arg( array(
+							
+							'action' 		=> 'rp',
+							'key' 			=> $key,
+							'login' 		=> rawurlencode($user->user_login),
+							'redirect_to' 	=> urlencode(get_permalink($this->plan_id)),
+							
+						), network_site_url('wp-login.php','login') );					
+					}
+				}
+			}
+			
 			// add shortcode
 			
 			add_shortcode('sponsored-plan', array( $this, 'get_sponsored_plan_shortcode' ) );
@@ -210,7 +273,11 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			// add invitations in plan schortcode
 				
 			add_action( 'ltple_plan_shortcode', array($this, 'get_invitations_dropdown' ) );
-								
+				
+			// add sponsored plans in invitation form
+			
+			add_action( 'ltple_get_sponsorship_message', array($this, 'get_invitation_message' ) );
+							
 			// add sponsored plans in invitation form
 			
 			add_action( 'ltple_prepend_sponsorship_form', array($this, 'get_invitation_inputs' ) );
@@ -288,7 +355,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 							
 								// check remaining licenses
 									
-								if( $sponsor_licenses = intval( get_user_meta($this->parent->user->ID,$this->parent->_base . 'sponsored_licenses_'.$plan_id,true) ) ){
+								if( $sponsor_licenses = intval( get_user_meta($q[0]->post_author,$this->parent->_base . 'sponsored_licenses_'.$plan_id,true) ) ){
 									
 									// get plan options
 									
@@ -331,7 +398,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 										$sponsor_licenses = $sponsor_licenses - 1;
 										
-										update_user_meta($this->parent->user->ID,$this->parent->_base . 'sponsored_licenses_'.$plan_id,$sponsor_licenses);
+										update_user_meta($q[0]->post_author,$this->parent->_base . 'sponsored_licenses_'.$plan_id,$sponsor_licenses);
 																				
 										// unlock 
 
@@ -364,7 +431,9 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 										$title 		= 'Invitation accepted by ' . ucfirst($this->parent->user->user_nicename) . ' for ' . $plan_title;
 										
 										$content 	= '';
-										$content 	.= 'Congratulations ' . ucfirst($sponsor->data->user_nicename) . '! ' . $this->parent->user->user_nicename . ' just accepted your invitation to use "' . $plan_title . '" for 30 days.' . PHP_EOL . PHP_EOL;
+										$content 	.= 'Congratulations ' . ucfirst($sponsor->data->user_nicename) . '! ' . PHP_EOL . PHP_EOL;
+										
+										$content 	.= ucfirst($this->parent->user->user_nicename) . ' just accepted your invitation to use "' . $plan_title . '" for 30 days.' . PHP_EOL . PHP_EOL;
 										
 										if( !empty($_POST['sponsor_message']) ){
 											
@@ -427,6 +496,27 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 						}
 					}
 				}
+			}
+			elseif( !$this->parent->user->loggedin && !empty($this->user_email) ){
+				
+				$_SESSION['message'] = '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
+					
+					$_SESSION['message'] .= 'An invitation is waiting for you but you need to log in first...';
+					
+					$_SESSION['message'] .= '<div class="pull-right">';
+						
+						if(!empty($this->login_url)){
+						
+							$_SESSION['message'] .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->login_url . '">Let\'s go!</a>';
+						}
+						elseif(!empty($this->register_url)){
+						
+							$_SESSION['message'] .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->register_url . '">Let\'s do it!</a>';
+						}
+						
+					$_SESSION['message'] .= '</div>';
+					
+				$_SESSION['message'] .= '</div>';				
 			}
 		}
 	}
@@ -579,6 +669,23 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		return $sponsored_plans;
 	}
 	
+	public function get_invitation_message(){
+
+		if( empty($this->parent->email->invitationMessage) ){
+			
+			$company = ucfirst(get_bloginfo('name'));
+			
+			$this->parent->email->invitationMessage = 'Hello, ' . PHP_EOL . PHP_EOL;
+			
+			$this->parent->email->invitationMessage .= 'I would like to become your sponsor on ' . $company . '.' . PHP_EOL . PHP_EOL;
+			
+			$this->parent->email->invitationMessage .= 'What do you think?' . PHP_EOL . PHP_EOL;
+			
+			$this->parent->email->invitationMessage .= 'Yours,' . PHP_EOL;
+			$this->parent->email->invitationMessage .= ucfirst( $this->parent->user->user_nicename ) . PHP_EOL;
+		}	
+	}
+	
 	public function get_invitation_inputs(){
 		
 		if( $plans = $this->get_sponsored_plans('post_title') ){
@@ -698,11 +805,13 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 						}
 					}					
 					
+					
+					
 					if(!$unlocked){
 					
 						// check remaining licenses
 						
-						if( $sponsor_licenses = intval( get_user_meta($this->parent->user->ID,$this->parent->_base . 'sponsored_licenses_'.$invitation->sponsored_plan_id,true) ) ){
+						if( $sponsor_licenses = intval( get_user_meta($invitation->post_author,$this->parent->_base . 'sponsored_licenses_'.$invitation->sponsored_plan_id,true) ) ){
 						
 							$sponsor_invitations[$invitation->ID] = 'x1 invitation from ' . ucfirst(get_the_author_meta('nickname',$invitation->post_author)).' ';
 						}
@@ -1231,65 +1340,85 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	}
 	
 	public function get_invitations_dropdown($plan_id){
-
+	
 		if( empty($this->parent->plan->buttons[$plan_id]['sponsored']) ){
 		
 			$sponsored_plan = $this->get_sponsored_plans('post_title');
 		
-			if( !empty($sponsored_plan[$plan_id]) ){
+			
 		
-				// get sponsor invitations
+			if( !empty($sponsored_plan[$plan_id]) ){
 				
-				$sponsor_invitations = $this->get_sponsor_invitations($plan_id);
-				
-				if( !empty($sponsor_invitations) ){
+				if($this->parent->user->loggedin){
 
-					$button = '<a class="btn btn-lg btn-primary" href="#sponsorInvitation" data-toggle="dialog" data-target="#sponsorInvitation">Unlock Free</a>';
-
-					$button .='<div id="sponsorInvitation" title="Sponsor invitation">';
-						
-						$button .= '<form action="" method="post" class="center-block">';
-							
-							$button .= '<b>Pending invitations</b>';
-							
-							$button .= $this->parent->admin->display_field( array(
-							
-								'type'				=> 'select',
-								'id'				=> 'sponsor_invitation_id',
-								'name'				=> 'sponsor_invitation_id',
-								'options' 			=> $sponsor_invitations,
-								'style' 			=> 'text-align:center;',
-								'description'		=> '<i style="font-size:11px;">* Free License (30 days)</i>',
-								
-							), false, false );
-							
-							$button .= '<hr/>';
-							
-							$button .= '<b>Additional message</b>';
-						
-							$button .= $this->parent->admin->display_field( array(
-							
-								'type'				=> 'textarea',
-								'id'				=> 'sponsor_message',
-								'name'				=> 'sponsor_message',
-								'default'			=> 'Thanks for inviting me!',
-								'style'				=> 'height:100px;',
-								'description'		=> '',
-								
-							), false, false );							
-						
-							$button .= '<hr/>';
-						
-							$button .='<div class="ui-helper-clearfix ui-dialog-buttonset">';
-
-								$button .='<button class="btn btn-xs btn-primary pull-right" type="submit" id="duplicateBtn" style="border-radius:3px;margin-top: 5px;">Accept invitation</button>';
-						 
-							$button .='</div>';
-						
-						$button .= '</form>';							
-						
-					$button .='</div>';
+					// get sponsor invitations
 					
+					$sponsor_invitations = $this->get_sponsor_invitations($plan_id);
+					
+					if( !empty($sponsor_invitations) ){
+
+						$button = '<a class="btn btn-lg btn-primary" href="#sponsorInvitation" data-toggle="dialog" data-target="#sponsorInvitation">Unlock Free</a>';
+
+						$button .='<div id="sponsorInvitation" title="Sponsor invitation">';
+							
+							$button .= '<form action="" method="post" class="center-block">';
+								
+								$button .= '<b>Pending invitations</b>';
+								
+								$button .= $this->parent->admin->display_field( array(
+								
+									'type'				=> 'select',
+									'id'				=> 'sponsor_invitation_id',
+									'name'				=> 'sponsor_invitation_id',
+									'options' 			=> $sponsor_invitations,
+									'style' 			=> 'text-align:center;',
+									'description'		=> '<i style="font-size:11px;">* Free License (30 days)</i>',
+									
+								), false, false );
+								
+								$button .= '<hr/>';
+								
+								$button .= '<b>Additional message</b>';
+							
+								$button .= $this->parent->admin->display_field( array(
+								
+									'type'				=> 'textarea',
+									'id'				=> 'sponsor_message',
+									'name'				=> 'sponsor_message',
+									'default'			=> 'Thanks for inviting me!',
+									'style'				=> 'height:100px;',
+									'description'		=> '',
+									
+								), false, false );							
+							
+								$button .= '<hr/>';
+							
+								$button .='<div class="ui-helper-clearfix ui-dialog-buttonset">';
+
+									$button .='<button class="btn btn-xs btn-primary pull-right" type="submit" id="duplicateBtn" style="border-radius:3px;margin-top: 5px;">Accept invitation</button>';
+							 
+								$button .='</div>';
+							
+							$button .= '</form>';							
+							
+						$button .='</div>';
+						
+						$this->parent->plan->buttons[$plan_id]['sponsored'] = $button;
+					}
+				}
+				elseif( !empty($this->plan_id) && $this->plan_id == $plan_id){
+					
+					if(!empty($this->login_url)){
+						
+						$url = $this->login_url;
+					}
+					elseif(!empty($this->register_url)){
+						
+						$url = $this->register_url;
+					}
+					
+					$button = '<a class="btn btn-lg btn-primary" href="' . $url . '">Unlock Free</a>';
+
 					$this->parent->plan->buttons[$plan_id]['sponsored'] = $button;
 				}
 			}
@@ -1319,14 +1448,6 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			if( !empty($_POST['importPlanId']) ){
 				
 				if( $plan = get_post($_POST['importPlanId']) ){
-				
-					// get plan permalink
-				
-					$plan_url = add_query_arg( array(
-					
-						'ri' => $this->parent->user->refId,
-						
-					), get_permalink($plan->ID) );
 					
 					// get plan thumb
 				
@@ -1342,13 +1463,22 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					foreach($users as $i => $user){
 						
+						// get plan permalink
+					
+						$plan_url = add_query_arg( array(
+							
+							'su' 	=> $this->parent->ltple_encrypt_uri( $_POST['importPlanId'] . '-' . $user['email'] . '-' . time() ),
+							'ri' 	=> $this->parent->user->refId,
+							
+						), get_permalink($plan->ID) ); 
+						
 						$can_spam = get_user_meta( $user['id'], $this->parent->_base . '_can_spam',true);
 
 						if( $can_spam !== 'false' ){
 						
 							//get invitation title
 							
-							$invitation_title = 'Sponsor invitation - ' . ucfirst($this->parent->user->user_nicename) . ' wants to become your sponsor for ' . $plan->post_title . ' on ' . $company . ' '.time();
+							$invitation_title = 'Sponsor invitation - ' . ucfirst($this->parent->user->user_nicename) . ' wants to become your sponsor for ' . $plan->post_title . ' on ' . $company . ' ';
 							
 							//check if invitation exists
 
@@ -1386,7 +1516,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 													
 													$invitation_content .= '<td style="text-align:center;background-color:#ffffff;height:350px;border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;background-image: url('.$plan_thumb.');background-repeat:no-repeat;background-size:100% auto;background-position:top center;overflow:hidden;">';
 														
-														$invitation_content .= '<a href="http://camgirl.xniteproductions.com/cb-profiler/" target="_blank" title="Live Template Editor" style="display:block;width:90%;height:350px;text-align:left;overflow:hidden;font-size:24px;color:#FFFFFF!important;text-decoration:none;font-weight:bold;padding:16px 14px 9px;font-family:Arial, Helvetica, sans-serif;position:reltive;margin:0 auto;">&nbsp;</a>';
+														$invitation_content .= '<a href="'.$plan_url.'" target="_blank" title="'.$company.'" style="display:block;width:90%;height:350px;text-align:left;overflow:hidden;font-size:24px;color:#FFFFFF!important;text-decoration:none;font-weight:bold;padding:16px 14px 9px;font-family:Arial, Helvetica, sans-serif;position:reltive;margin:0 auto;">&nbsp;</a>';
 														
 													$invitation_content .= '</td>';
 												
@@ -1428,7 +1558,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 													$invitation_content .= '<tr>';													
 																
-														$invitation_content .= '<td style="background: rgb(248, 248, 248);display: inline-block;padding:20px;margin:0 20px;text-align:left;border-left: 5px solid #888;">';
+														$invitation_content .= '<td style="background: rgb(248, 248, 248);display:block;padding:20px;margin:20px;text-align:left;border-left: 5px solid #888;">';
 																
 															$invitation_content .= $_POST['importMessage'];
 														
