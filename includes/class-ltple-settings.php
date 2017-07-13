@@ -43,6 +43,14 @@ class LTPLE_Sponsorship_Settings {
 		$this->plugin 		 	= new stdClass();
 		$this->plugin->slug  	= 'live-template-editor-sponsorship';
 		
+		foreach($this->parent->settings->tabs as $i => $tabs){
+			
+			if( isset($tabs['email-model']) ){
+				
+				$this->parent->settings->tabs[$i]['sponsor-invitation'] = array( 'name' => 'Sponsorship', 'post-type' => 'sponsor-invitation' );
+			}
+		}		
+		
 		add_action('ltple_plugin_settings', array($this, 'plugin_info' ) );
 		
 		add_action('ltple_plugin_settings', array($this, 'settings_fields' ) );
@@ -118,14 +126,6 @@ class LTPLE_Sponsorship_Settings {
 	public function add_menu_items () {
 		
 		//add menu in wordpress dashboard
-		
-		add_submenu_page(
-			'live-template-editor-client',
-			__( 'Sponsor Invitations', $this->plugin->slug ),
-			__( 'Sponsor Invitations', $this->plugin->slug ),
-			'edit_pages',
-			'edit.php?post_type=sponsor-invitation'
-		);
 		
 		add_users_page( 
 			'All Sponsors', 

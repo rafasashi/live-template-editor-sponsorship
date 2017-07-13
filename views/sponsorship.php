@@ -227,6 +227,49 @@
 									
 								echo'</div>';
 								
+
+								echo'<div class="col-xs-12">';
+
+										// get table of invited people
+
+										$this->parent->api->get_table(
+										
+											$this->parent->urls->api . 'ltple-sponsored/v1/invitations', 
+											array(
+											
+												array(
+				
+													'field' 	=> 'name',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Name',
+												),
+												array(
+				
+													'field' 	=> 'email',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Email',
+												),
+												array(
+				
+													'field' 	=> 'last_seen',
+													'sortable' 	=> 'true',
+													'content' 	=> 'Last Seen',
+												),
+										
+											), 
+											$trash		= false,
+											$export		= false,
+											$search		= true,
+											$toggle		= false,
+											$columns	= true,
+											$header		= true,
+											$pagination	= true,
+											$form		= false,
+											$toolbar 	= 'toolbar'
+										);									
+								
+								echo'</div>';
+								
 							echo'</div>';						
 							
 						echo'</div>'; //invitations

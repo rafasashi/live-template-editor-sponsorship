@@ -66,7 +66,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		$this->admin 	= new LTPLE_Sponsorship_Admin_API( $this );
 		
-		$this->parent->register_post_type( 'sponsor-invitation', __( 'Sponsor invitation', 'live-template-editor-sponsorship' ), __( 'Sponsor invitation', 'live-template-editor-sponsorship' ), '', array(
+		$this->parent->register_post_type( 'sponsor-invitation', __( 'Sponsor Invitations', 'live-template-editor-sponsorship' ), __( 'Sponsor invitation', 'live-template-editor-sponsorship' ), '', array(
 
 			'public' 				=> false,
 			'publicly_queryable' 	=> false,
@@ -290,16 +290,16 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			
 			add_action( 'rest_api_init', function(){
 				
-				register_rest_route( 'ltple-sponsored/v1', '/users/', array(
-					
-					'methods' 	=> 'GET',
-					'callback' 	=> array($this,'get_sponsored_users'),
-				));
-				
 				register_rest_route( 'ltple-sponsored/v1', '/licenses/', array(
 					
 					'methods' 	=> 'GET',
 					'callback' 	=> array($this,'get_sponsored_plan_rows'),
+				));
+				
+				register_rest_route( 'ltple-sponsored/v1', '/invitations/', array(
+					
+					'methods' 	=> 'GET',
+					'callback' 	=> array($this,'get_sponsored_users_rows'),
 				));
 			});
 			
@@ -418,7 +418,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 										
 										$_SESSION['message'] ='<div class="alert alert-success">';
 										
-											$_SESSION['message'] .='Congratulations, thanks to <b>'. ucfirst($sponsor->data->user_nicename) .'</b> you have successfully unlocked <b>'. ucfirst($plan_title).'</b> for 30 days!';
+											$_SESSION['message'] .='Congratulations, thanks to <b>'. ucfirst($sponsor->data->nickname) .'</b> you have successfully unlocked <b>'. ucfirst($plan_title).'</b> for 30 days!';
 										
 										$_SESSION['message'] .='</div>';
 									
@@ -428,18 +428,18 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 										
 										$dashboard_url = $this->parent->urls->editor . '?sponsorship';
 										
-										$title 		= 'Invitation accepted by ' . ucfirst($this->parent->user->user_nicename) . ' for ' . $plan_title;
+										$title 		= 'Invitation accepted by ' . ucfirst($this->parent->user->nickname) . ' for ' . $plan_title;
 										
 										$content 	= '';
-										$content 	.= 'Congratulations ' . ucfirst($sponsor->data->user_nicename) . '! ' . PHP_EOL . PHP_EOL;
+										$content 	.= 'Congratulations ' . ucfirst($sponsor->data->nickname) . '! ' . PHP_EOL . PHP_EOL;
 										
-										$content 	.= ucfirst($this->parent->user->user_nicename) . ' just accepted your invitation to use "' . $plan_title . '" for 30 days.' . PHP_EOL . PHP_EOL;
+										$content 	.= ucfirst($this->parent->user->nickname) . ' just accepted your invitation to use "' . $plan_title . '" for 30 days.' . PHP_EOL . PHP_EOL;
 										
 										if( !empty($_POST['sponsor_message']) ){
 											
 											if($sponsor_message = trim(strip_tags($_POST['sponsor_message']))){
 											
-												$content 	.= 'Additional message from ' . ucfirst($this->parent->user->user_nicename) . ': ' . PHP_EOL . PHP_EOL;
+												$content 	.= 'Additional message from ' . ucfirst($this->parent->user->nickname) . ': ' . PHP_EOL . PHP_EOL;
 												
 												$content 	.= '____________' . PHP_EOL . PHP_EOL;
 												
@@ -682,7 +682,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			$this->parent->email->invitationMessage .= 'What do you think?' . PHP_EOL . PHP_EOL;
 			
 			$this->parent->email->invitationMessage .= 'Yours,' . PHP_EOL;
-			$this->parent->email->invitationMessage .= ucfirst( $this->parent->user->user_nicename ) . PHP_EOL;
+			$this->parent->email->invitationMessage .= ucfirst( $this->parent->user->nickname ) . PHP_EOL;
 		}	
 	}
 	
@@ -887,46 +887,63 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		}
 	}
 	
-	public function get_sponsored_users($request) {
+	public function get_sponsored_users() {
+		
+		$sponsored_users = array();
+		
+		if( $invitations = get_posts(array(
+								
+			'post_type' 	=> 'sponsor-invitation',
+			'author' 		=> $this->parent->user->ID,
+			'post_status' 	=> 'publish',
+			'posts_per_page'=> -1,
+			'fields'		=> 'ids',
+		))){
+			
+			foreach($invitations as $invitation_id){
+				
+				if( $user_email = get_post_meta($invitation_id,'sponsored_user_email',true)){
+
+					if( $user = get_user_by('email',$user_email)){
+				
+						$sponsored_users[] = $user->data;
+					}
+				}
+			}
+		}
+
+		return $sponsored_users;
+	}
+	
+	public function get_sponsored_users_rows($request) {
 
 		$sponsor_users = [];
 
 		if( $this->parent->user->loggedin ){
 		
-			$sponsor_id = $this->parent->user->ID;
-		
-			$q 	= get_users( array(
-				
-				'role__in' => 'administrator',
-				'fields' => array(
-				
-					'id',
-					'user_email',
-					'display_name',
-					'user_nicename',
-				),
-			));
+			if($sponsored_users = $this->get_sponsored_users()){
 			
-			foreach( $q as $user ){
-				
-				$user_seen = get_user_meta($user->id,$this->parent->_base . '_last_seen',true);
-				
-				$item = [];
-				
-				if( !empty( $user->display_name ) ){
+				foreach( $sponsored_users as $user ){
 					
-					$item['name'] 	= $user->display_name;
-				}
-				else{
+					$user_seen = get_user_meta($user->ID,$this->parent->_base . '_last_seen',true);
 					
-					$item['name'] 	= $user->user_nicename;
-				}
-				
-				$item['email'] 		= $user->user_email;
-				
-				$item['last_seen'] 	= $this->parent->users->time_ago( '@' . $user_seen );
+					$item = [];
+					
+					if( !empty( $user->display_name ) ){
+						
+						$item['name'] 	= $user->display_name;
+					}
+					else{
+						
+						$item['name'] 	= $user->nickname;
+					}
+					
+					$item['email'] 		= $user->user_email;
+					
+					$item['last_seen'] 	= $this->parent->users->time_ago( '@' . $user_seen );
 
-				$sponsor_users[] = $item;
+					$sponsor_users[] = $item;
+				}
 			}
 		}
 		
@@ -1115,12 +1132,13 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 										
 											$sponsored_plan.= '<th><b>Package</b></th>';
 											
-											$sponsored_plan.= '<th style="text-align:center;"><b>Price</b></th>';
+											$sponsored_plan.= '<th style="text-align:center;"><b>Base</b></th>';
 											
 											$sponsored_plan.= '<th style="text-align:center;"><b>Quantity</b></th>';
 											$sponsored_plan.= '<th style="text-align:center;"><b>Percent off</b></th>';
-											$sponsored_plan.= '<th style="text-align:center;"><b>Amount off</b></th>';
+											//$sponsored_plan.= '<th style="text-align:center;"><b>Amount off</b></th>';
 											
+											$sponsored_plan.= '<th style="text-align:center;"><b>Price</b></th>';
 											$sponsored_plan.= '<th style="text-align:center;"><b>TOTAL</b></th>';
 											$sponsored_plan.= '<th></th>';
 											
@@ -1137,17 +1155,18 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 												
 												// get total fee amount
 												
-												$total_fee_amount 	= round(( ( ( $plan_fee_amount + $plan_price_amount ) * $plan_quantity * ( 1 - ( $plan_percent_off / 100 ) ) ) - $plan_amount_off ), 2);
-												$total_price_amount = 0;
+												$discounted_fee_amount 	= round(( ( ( $plan_fee_amount + $plan_price_amount ) * ( 1 - ( $plan_percent_off / 100 ) ) ) - $plan_amount_off ), 2);
 												
+												$total_fee_amount 	= round(( $discounted_fee_amount * $plan_quantity ), 2);
+
 												//get plan_data
 
 												$plan_data = [];
 												
 												$plan_data['id'] 			= $plan->ID;
 												$plan_data['name'] 			= $package_name;
-												$plan_data['price'] 		= $total_price_amount;
-												$plan_data['fee'] 			= $total_fee_amount;
+												$plan_data['price'] 		= 0;
+												$plan_data['fee'] 			= $discounted_fee_amount;
 												$plan_data['currency']		= $total_price_currency;
 												$plan_data['period'] 		= $total_price_period;
 												$plan_data['fperiod']		= $total_fee_period;
@@ -1183,8 +1202,9 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 													
 													$sponsored_plan.= '<td style="width:95px;text-align:center;">'.$plan_quantity.'</td>';
 													$sponsored_plan.= '<td style="width:95px;text-align:center;">'.$plan_percent_off.'%</td>';
-													$sponsored_plan.= '<td style="width:95px;text-align:center;">'.$total_price_currency.$plan_amount_off.'</td>';
+													//$sponsored_plan.= '<td style="width:95px;text-align:center;">'.$total_price_currency.$plan_amount_off.'</td>';
 													
+													$sponsored_plan.= '<td style="width:95px;text-align:center;">'.$total_price_currency.$discounted_fee_amount.'</td>';
 													$sponsored_plan.= '<td style="width:95px;text-align:center;"><b>'.$total_price_currency.$total_fee_amount.'</b></td>';
 													
 													$sponsored_plan.= '<td style="width:40px;">';
@@ -1327,16 +1347,6 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 				$this->parent->plan->message .= '</div>';	
 			}
 		}
-		else{
-			
-			// output error message
-			
-			$this->parent->plan->message .= '<div class="alert alert-warning">';
-				
-				$this->parent->plan->message .= 'This plan doesn\'t exists, please contact billing support...';
-
-			$this->parent->plan->message .= '</div>';				
-		}
 	}
 	
 	public function get_invitations_dropdown($plan_id){
@@ -1344,8 +1354,6 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		if( empty($this->parent->plan->buttons[$plan_id]['sponsored']) ){
 		
 			$sponsored_plan = $this->get_sponsored_plans('post_title');
-		
-			
 		
 			if( !empty($sponsored_plan[$plan_id]) ){
 				
@@ -1357,7 +1365,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					if( !empty($sponsor_invitations) ){
 
-						$button = '<a class="btn btn-lg btn-primary" href="#sponsorInvitation" data-toggle="dialog" data-target="#sponsorInvitation">Unlock Free</a>';
+						$button = '<a class="btn btn-lg btn-primary" href="#sponsorInvitation" data-toggle="dialog" data-target="#sponsorInvitation">Active Invitation</a>';
 
 						$button .='<div id="sponsorInvitation" title="Sponsor invitation">';
 							
@@ -1417,7 +1425,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 						$url = $this->register_url;
 					}
 					
-					$button = '<a class="btn btn-lg btn-primary" href="' . $url . '">Unlock Free</a>';
+					$button = '<a class="btn btn-lg btn-primary" href="' . $url . '">Active Invitation</a>';
 
 					$this->parent->plan->buttons[$plan_id]['sponsored'] = $button;
 				}
@@ -1478,7 +1486,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 						
 							//get invitation title
 							
-							$invitation_title = 'Sponsor invitation - ' . ucfirst($this->parent->user->user_nicename) . ' wants to become your sponsor for ' . $plan->post_title . ' on ' . $company . ' ';
+							$invitation_title = 'Sponsor invitation - ' . ucfirst($this->parent->user->nickname) . ' wants to become your sponsor for ' . $plan->post_title . ' on ' . $company . ' ';
 							
 							//check if invitation exists
 
@@ -1514,7 +1522,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 												
 												$invitation_content .= '<tr>';
 													
-													$invitation_content .= '<td style="text-align:center;background-color:#ffffff;height:350px;border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;background-image: url('.$plan_thumb.');background-repeat:no-repeat;background-size:100% auto;background-position:top center;overflow:hidden;">';
+													$invitation_content .= '<td style="text-align:center;background-color:#ffffff;border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;background-image: url('.$plan_thumb.');background-repeat:no-repeat;background-size:100% auto;background-position:top center;overflow:hidden;">';
 														
 														$invitation_content .= '<a href="'.$plan_url.'" target="_blank" title="'.$company.'" style="display:block;width:90%;height:350px;text-align:left;overflow:hidden;font-size:24px;color:#FFFFFF!important;text-decoration:none;font-weight:bold;padding:16px 14px 9px;font-family:Arial, Helvetica, sans-serif;position:reltive;margin:0 auto;">&nbsp;</a>';
 														
@@ -1524,7 +1532,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 												
 												$invitation_content .= '<tr>';
 													
-													$invitation_content .= '<td style="font-family: Arial, sans-serif;padding:0 0 15px 0;font-size:19px;color:#888888;font-weight:bold;border-bottom:1px solid #cccccc;text-align:center;background-color:#FFFFFF;">';
+													$invitation_content .= '<td style="font-family: Arial, sans-serif;padding:10px 0 15px 0;font-size:19px;color:#888888;font-weight:bold;border-bottom:1px solid #cccccc;text-align:center;background-color:#FFFFFF;">';
 														
 														$invitation_content .= 'Sponsorship Invitation';
 														
@@ -1538,7 +1546,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 														
 														$invitation_content .= 'Hello *|FNAME|*,' . PHP_EOL . PHP_EOL;
 														
-														$invitation_content .= ucfirst($this->parent->user->user_nicename) . ' wants to become your sponsor and offer you a free access to <b>' . $plan->post_title . '</b> on <b>' . $company . '</b> during <b>30 days</b>!' . PHP_EOL . PHP_EOL;
+														$invitation_content .= ucfirst($this->parent->user->nickname) . ' wants to become your sponsor and offer you a free access to <b>' . $plan->post_title . '</b> on <b>' . $company . '</b> during <b>30 days</b>!' . PHP_EOL . PHP_EOL;
 														
 													$invitation_content .=  '</td>';
 																
@@ -1550,7 +1558,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 														$invitation_content .= '<td style="line-height: 25px;font-family: Arial, sans-serif;padding:10px 20px ;font-size:15px;color:#666666;text-align:left;font-weight: normal;border:0;background-color:#FFFFFF;">';
 																												
-															$invitation_content .= 'Additional message from ' . ucfirst($this->parent->user->user_nicename) . ': ' . PHP_EOL;
+															$invitation_content .= 'Additional message from ' . ucfirst($this->parent->user->nickname) . ': ' . PHP_EOL;
 																
 														$invitation_content .=  '</td>';
 																
@@ -1598,10 +1606,15 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 									
 									update_post_meta($invitation_id,'sponsored_plan_id',$plan->ID);
 									
-									$this->parent->email->send_model($invitation_id,$user['email']);
+									if( $i == 0 ){
 									
-									//wp_schedule_single_event( ( time() + ( 60 * $m ) ) , $this->parent->_base . 'send_email_event' , [$invitation_id,$invitation['email']] );
-								
+										$this->parent->email->send_model($invitation_id,$user['email']);
+									}
+									else{
+										
+										wp_schedule_single_event( ( time() + ( 60 * $m ) ) , $this->parent->_base . 'send_email_event' , [$invitation_id,$user['email']] );
+									}
+									
 									if ($i % 10 == 0) {
 										
 										++$m;
