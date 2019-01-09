@@ -76,10 +76,10 @@
 			
 			require_once( $file );
 		}
-	
+		
 		if( $mode == '-dev' ){
 			
-			LTPLE_Sponsorship('1.1.1');
+			LTPLE_Sponsorship(time());
 		}
 		else{
 			

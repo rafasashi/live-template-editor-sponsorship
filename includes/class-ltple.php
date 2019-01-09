@@ -145,7 +145,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 			if( isset($_GET['sponsorship']) ){
 
-				include($this->views . $this->parent->_dev .'/sponsorship.php');
+				include($this->views . '/sponsorship.php');
 				
 				$this->parent->viewIncluded = true;
 			}
@@ -153,11 +153,14 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		add_action( 'ltple_view_my_profile', function(){
 			
-			echo'<li style="position:relative;">';
-				
-				echo '<a href="'. $this->parent->urls->editor .'?sponsorship"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Sponsorship Program</a>';
+			if( $this->parent->user->is_sponsorship ){
+			
+				echo'<li style="position:relative;">';
+					
+					echo '<a href="'. $this->parent->urls->editor .'?sponsorship"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Sponsorship Program</a>';
 
-			echo'</li>';
+				echo'</li>';
+			}
 		});
 	}
 	
@@ -995,7 +998,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					$item['action'] = '<div style="width:100px;text-align:center;padding:10px 10px 0 10px;">';
 					
-						$item['action'].='<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
+						$item['action'].='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
 						
 							$item['action'].='Purchase'.PHP_EOL;
 
@@ -1032,7 +1035,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					/*
 					$item['action'] .= '<div style="width:100px;text-align:center;padding:10px 10px 0 10px;">';
 					
-						$item['action'] .= '<a style="width:100%;" href="#" class="btn btn-md btn-info">Invite</a>';
+						$item['action'] .= '<a style="width:100%;" href="#" class="btn btn-sm btn-info">Invite</a>';
 					
 					$item['action'] .= '</div>';
 					*/

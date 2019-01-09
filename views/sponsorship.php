@@ -138,7 +138,7 @@
 
 							echo'</div>';							
 
-							echo'<div class="tab-content row">';
+							echo'<div class="tab-content row" style="padding-top:30px;">';
 
 								echo'<div class="col-xs-12">';
 
