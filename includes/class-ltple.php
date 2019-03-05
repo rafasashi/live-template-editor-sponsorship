@@ -645,7 +645,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		// get sponsor content
 		
-		$this->parent->profile->tabs['sponsor-me']['content'] = '<div style="display:inline-block;width:100%;margin-top:10px;">';
+		$this->parent->profile->tabs['sponsor-me']['content'] = '<div class="col-xs-12 col-sm-7">';
 
 		$this->parent->profile->tabs['sponsor-me']['content'] .= '<h3>One time sponsorship</h3>';
 		
@@ -1906,8 +1906,9 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	 */
 	public function enqueue_styles () {
 		
-		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-frontend' );
+		//wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array(), $this->_version );
+		//wp_enqueue_style( $this->_token . '-frontend' );
+	
 	} // End enqueue_styles ()
 
 	/**
@@ -1918,8 +1919,9 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	 */
 	public function enqueue_scripts () {
 		
-		wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
-		wp_enqueue_script( $this->_token . '-frontend' );
+		//wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
+		//wp_enqueue_script( $this->_token . '-frontend' );
+	
 	} // End enqueue_scripts ()
 
 	/**
