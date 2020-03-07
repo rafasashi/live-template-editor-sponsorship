@@ -66,105 +66,6 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		$this->admin 	= new LTPLE_Sponsorship_Admin_API( $this );
 		
-		/*
-		$this->parent->register_post_type( 'sponsor-invitation', __( 'Sponsor Invitations', 'live-template-editor-sponsorship' ), __( 'Sponsor invitation', 'live-template-editor-sponsorship' ), '', array(
-
-			'public' 				=> false,
-			'publicly_queryable' 	=> false,
-			'exclude_from_search' 	=> true,
-			'show_ui' 				=> true,
-			'show_in_menu'		 	=> 'sponsor-invitation',
-			'show_in_nav_menus' 	=> true,
-			'query_var' 			=> true,
-			'can_export' 			=> true,
-			'rewrite' 				=> false,
-			'capability_type' 		=> 'post',
-			'has_archive' 			=> false,
-			'hierarchical' 			=> false,
-			'show_in_rest' 			=> true,
-			//'supports' 			=> array( 'title', 'editor', 'author', 'excerpt', 'comments', 'thumbnail','page-attributes' ),
-			'supports' 				=> array( 'title', 'editor', 'author' ),
-			'menu_position' 		=> 5,
-			'menu_icon' 			=> 'dashicons-admin-post',
-		));
-		
-		add_action( 'add_meta_boxes', function(){
-		
-			$this->parent->admin->add_meta_box (
-			
-				'sponsor_packages',
-				__( 'Sponsor packages', 'live-template-editor-sponsorship' ), 
-				array("subscription-plan"),
-				'advanced'
-			);
-			
-			$this->parent->admin->add_meta_box (
-			
-				'sponsored_plan_id',
-				__( 'Sponsored Plan ID', 'live-template-editor-sponsorship' ), 
-				array("sponsor-invitation"),
-				'advanced'
-			);
-			
-			$this->parent->admin->add_meta_box (
-			
-				'sponsored_user_email',
-				__( 'Sponsored User Email', 'live-template-editor-sponsorship' ), 
-				array("sponsor-invitation"),
-				'advanced'
-			);
-			
-			$this->parent->admin->add_meta_box (
-			
-				'sponsored_plan_unlocked',
-				__( 'Sponsored User Approvals', 'live-template-editor-sponsorship' ), 
-				array("sponsor-invitation"),
-				'advanced'
-			);
-		});
-
-		add_action( 'ltple_loaded', array( $this, 'init_sponsorship' ));
-
-		add_action( 'ltple_list_programs', function(){
-			
-			$this->parent->programs->list['sponsorship'] = 'Sponsorship';
-		});
-
-		add_action( 'ltple_campaign_triggers', function(){
-			
-			$this->parent->campaign->triggers = array_merge(
-			
-				$this->get_terms( $this->parent->campaign->taxonomy, array( 
-							
-					'sponsorship-approved' 	=> 'Sponsorship Approved',
-				))			
-			
-			,$this->parent->campaign->triggers);
-		});
-		
-		add_action( 'ltple_editor', function(){
-		
-			if( isset($_GET['sponsorship']) ){
-
-				include($this->views . '/sponsorship.php');
-				
-				$this->parent->viewIncluded = true;
-			}
-		});
-		
-		add_action( 'ltple_view_my_profile', function(){
-			
-			if( $this->parent->user->is_sponsorship ){
-			
-				echo'<li style="position:relative;background:#182f42;">';
-					
-					echo '<a href="'. $this->parent->urls->editor .'?sponsorship"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Sponsorship Program</a>';
-
-				echo'</li>';
-			}
-		});
-		*/
-		
 		// handle sponsor payment
 		
 		add_filter( 'ltple_one_time_payment', array( $this, 'handle_sponsor_payment'));
@@ -663,7 +564,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 			},10 );	
 			
-			$tabs['sponsor-me']['content'] = '<div class="col-xs-12 col-sm-7">';
+			$tabs['sponsor-me']['content'] = '<div class="col-xs-12 col-sm-7" style="margin:0 15px;">';
 
 			$tabs['sponsor-me']['content'] .= '<h3>One time sponsorship</h3>';
 			

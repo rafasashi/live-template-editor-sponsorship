@@ -124,14 +124,6 @@ class LTPLE_Sponsorship_Settings {
 	 * @return void
 	 */
 	public function add_menu_items () {
-		
-		//add menu in wordpress dashboard
-		
-		add_users_page( 
-			'All Sponsors', 
-			'All Sponsors', 
-			'edit_pages',
-			'users.php?' . $this->parent->_base .'view=sponsors'
-		);
+
 	}
 }
