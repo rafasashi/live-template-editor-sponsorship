@@ -45,7 +45,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		$this->views   		= trailingslashit( $this->dir ) . 'views';
 		$this->vendor  		= WP_CONTENT_DIR . '/vendor';
 		$this->assets_dir 	= trailingslashit( $this->dir ) . 'assets';
-		$this->assets_url 	= esc_url( trailingslashit( plugins_url( '/assets/', $this->file ) ) );
+		$this->assets_url 	= home_url( trailingslashit( str_replace( ABSPATH, '', $this->dir ))  . 'assets/' );
 		
 		//$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->script_suffix = '';
@@ -500,7 +500,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					'title' 	=> 'Send a smile',
 					'content' 	=> 'If you have only one smile in you give it to the people you love.',
-					'icon'		=> 'fa-smile-o',
+					'icon'		=> 'far fa-smile-wink',
 					'price' 	=> 0,
 					'fee' 		=> 5,
 					
@@ -509,7 +509,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					'title' 	=> 'Send support',
 					'content' 	=> 'Anything is possible when you have the right people there to support you.',
-					'icon'		=> 'fa-support',
+					'icon'		=> 'fas fa-hand-holding-heart',
 					'price' 	=> 0,
 					'fee' 		=> 10,
 					
@@ -518,7 +518,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					'title' 	=> 'Send a gift',
 					'content' 	=> 'Love the giver more than the gift.',
-					'icon'		=> 'fa-gift',
+					'icon'		=> 'fa fa-gift',
 					'price' 	=> 0,
 					'fee' 		=> 20,
 					
@@ -527,7 +527,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					'title' 	=> 'Contribute',
 					'content' 	=> 'It is through accomplishment that one makes his contribution and contribution is life’s greatest reward.',
-					'icon'		=> 'fa-road',
+					'icon'		=> 'fa fa-road',
 					'price' 	=> 0,
 					'fee' 		=> 50,
 					
@@ -536,7 +536,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 					'title' 	=> 'Become a sponsor',
 					'content' 	=> 'If you’re going to stay in the Olympics, you’ve got to be entertaining and get sponsorship.',
-					'icon'		=> 'fa-ship',
+					'icon'		=> 'fa fa-ship',
 					'price' 	=> 0,
 					'fee' 		=> 100,
 					
@@ -590,7 +590,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 						
 						$tabs['sponsor-me']['content'] .='<div class="col-xs-2">';
 							
-							$tabs['sponsor-me']['content'] .='<i style="font-size: 50px;color:' . $this->parent->settings->mainColor . ' !important" class="fa '.$plan['icon'].'" aria-hidden="true"></i>';
+							$tabs['sponsor-me']['content'] .='<i style="font-size: 50px;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
 							
 						$tabs['sponsor-me']['content'] .='</div>';
 
