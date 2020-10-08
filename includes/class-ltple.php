@@ -562,117 +562,131 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 					
 				');
 
-			},10 );	
+			},10 );
 			
-			$tabs['sponsor-me']['content'] = '<div class="col-xs-12 col-sm-7" style="margin:0 15px;">';
+			$tabs['sponsor-me']['content'] = '<div style="margin:0 15px;">';
+				
+				$tabs['sponsor-me']['content'] .= '<div class="col-xs-12 col-sm-5 pull-right">';
+				
+					$tabs['sponsor-me']['content'] .= '<div class="alert alert-info" style="margin: 40px 0px !important;">';
 
-			$tabs['sponsor-me']['content'] .= '<h3>One time sponsorship</h3>';
-			
-			foreach( $sponsorship_plans as $plan ){
-				 
-				if( !empty($plan) ){
+						$tabs['sponsor-me']['content'] 	.= 'Sponsor credits can only be used to purchase services on the platform. They are non-refundable & non-exchangeable.';
+					
+					$tabs['sponsor-me']['content'] 	.= '</div>';
+				
+				$tabs['sponsor-me']['content'] 	.= '</div>';
+				
+				$tabs['sponsor-me']['content'] .= '<div class="col-xs-12 col-sm-7">';
+
+				$tabs['sponsor-me']['content'] .= '<h3>One time sponsorship</h3>';
+				
+				foreach( $sponsorship_plans as $plan ){
 					 
-					// get agreement url
-					
-					$agreement_url = $this->parent->plan->get_agreement_url( array(
-					
-						'id' 		=> 'sponsorship_' . $sponsored_id . '_' . $plan['price'] . '_' . $plan['fee'],
-						'name' 		=> 'Sponsorship program',
-						'price' 	=> $plan['price'],
-						'fee' 		=> $plan['fee'],
-						'currency' 	=> $currency,
-						'sponsored'	=> $sponsored_email,
-					));
-										
-					$modal_id='modal_'.md5($agreement_url);
-					
-					$tabs['sponsor-me']['content'] .='<div class="row well">';
+					if( !empty($plan) ){
+						 
+						// get agreement url
 						
-						$tabs['sponsor-me']['content'] .='<div class="col-xs-2">';
-							
-							$tabs['sponsor-me']['content'] .='<i style="font-size: 50px;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
-							
-						$tabs['sponsor-me']['content'] .='</div>';
-
-						$tabs['sponsor-me']['content'] .='<div class="col-xs-7">';
-							
-							$tabs['sponsor-me']['content'] .= $plan['content'];
-							
-						$tabs['sponsor-me']['content'] .='</div>';					
+						$agreement_url = $this->parent->plan->get_agreement_url( array(
 						
-						$tabs['sponsor-me']['content'] .='<div class="col-xs-3 text-center">';
-
-							$tabs['sponsor-me']['content'] .='<div class="text-center" style="font-size:19px;font-weight:bold;">';
+							'id' 		=> 'sponsorship_' . $sponsored_id . '_' . $plan['price'] . '_' . $plan['fee'],
+							'name' 		=> 'Sponsorship program',
+							'price' 	=> $plan['price'],
+							'fee' 		=> $plan['fee'],
+							'currency' 	=> $currency,
+							'sponsored'	=> $sponsored_email,
+						));
+											
+						$modal_id='modal_'.md5($agreement_url);
+						
+						$tabs['sponsor-me']['content'] .='<div class="row well">';
+							
+							$tabs['sponsor-me']['content'] .='<div class="col-xs-2">';
 								
-								$tabs['sponsor-me']['content'] .= $currency . $plan['fee'];
-							
+								$tabs['sponsor-me']['content'] .='<i style="font-size:4.5rem;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
+								
 							$tabs['sponsor-me']['content'] .='</div>';
-								
-							//$tabs['sponsor-me']['content'] .='<hr style="margin-top: 7px;margin-bottom: 12px;border-top: 1px solid #dcdcdc;">';	
-								
-							$tabs['sponsor-me']['content'] .='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
-								
-								$tabs['sponsor-me']['content'] .='Send'.PHP_EOL;
 
-							$tabs['sponsor-me']['content'] .='</button>'.PHP_EOL;									
-
-							$tabs['sponsor-me']['content'] .='<div class="modal fade" id="'.$modal_id.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'.PHP_EOL;
+							$tabs['sponsor-me']['content'] .='<div class="col-xs-7">';
 								
-								$tabs['sponsor-me']['content'] .='<div class="modal-dialog modal-lg" role="document">'.PHP_EOL;
+								$tabs['sponsor-me']['content'] .= $plan['content'];
+								
+							$tabs['sponsor-me']['content'] .='</div>';					
+							
+							$tabs['sponsor-me']['content'] .='<div class="col-xs-3 text-center">';
+
+								$tabs['sponsor-me']['content'] .='<div class="text-center" style="font-size:19px;font-weight:bold;">';
 									
-									$tabs['sponsor-me']['content'] .='<div class="modal-content">'.PHP_EOL;
+									$tabs['sponsor-me']['content'] .= $currency . $plan['fee'];
+								
+								$tabs['sponsor-me']['content'] .='</div>';
 									
-										$tabs['sponsor-me']['content'] .='<div class="modal-header">'.PHP_EOL;
-											
-											$tabs['sponsor-me']['content'] .='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'.PHP_EOL;
-											
-											$tabs['sponsor-me']['content'] .= '<h4 class="modal-title" id="myModalLabel">';
-											
-												$tabs['sponsor-me']['content'] .= $plan['title'];
-											
-											$tabs['sponsor-me']['content'] .= '</h4>'.PHP_EOL;
+								//$tabs['sponsor-me']['content'] .='<hr style="margin-top: 7px;margin-bottom: 12px;border-top: 1px solid #dcdcdc;">';	
+									
+								$tabs['sponsor-me']['content'] .='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
+									
+									$tabs['sponsor-me']['content'] .='Send'.PHP_EOL;
+
+								$tabs['sponsor-me']['content'] .='</button>'.PHP_EOL;									
+
+								$tabs['sponsor-me']['content'] .='<div class="modal fade" id="'.$modal_id.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'.PHP_EOL;
+									
+									$tabs['sponsor-me']['content'] .='<div class="modal-dialog modal-lg" role="document">'.PHP_EOL;
 										
-										$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
-
-										if( $this->parent->user->loggedin ){
-											
-											$tabs['sponsor-me']['content'] .= '<div class="loadingIframe" style="height: 50px;width: 100%;background-position:50% center;background-repeat: no-repeat;background-image:url(\'' . $this->parent->server->url . '/c/p/live-template-editor-server/assets/loader.gif\');"></div>';
-
-											$tabs['sponsor-me']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:' . $this->parent->plan->iframe_height . 'px;overflow: hidden;"></iframe>';
-										}
-										else{
-											
-											$tabs['sponsor-me']['content'] .='<div class="modal-body">'.PHP_EOL;
-											
-												$tabs['sponsor-me']['content'] .= '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
-													
-													$tabs['sponsor-me']['content'] .= 'You need to log in first...';
-													
-													$tabs['sponsor-me']['content'] .= '<div class="pull-right">';
-
-														$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-success" href="' . wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) . '">Login</a>';
-														
-														$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-info" href="'. wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) .'&action=register">Register</a>';
-													
-													$tabs['sponsor-me']['content'] .= '</div>';
-													
-												$tabs['sponsor-me']['content'] .= '</div>';
+										$tabs['sponsor-me']['content'] .='<div class="modal-content">'.PHP_EOL;
+										
+											$tabs['sponsor-me']['content'] .='<div class="modal-header">'.PHP_EOL;
+												
+												$tabs['sponsor-me']['content'] .='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'.PHP_EOL;
+												
+												$tabs['sponsor-me']['content'] .= '<h4 class="modal-title" id="myModalLabel">';
+												
+													$tabs['sponsor-me']['content'] .= $plan['title'];
+												
+												$tabs['sponsor-me']['content'] .= '</h4>'.PHP_EOL;
 											
 											$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
-										}
 
+											if( $this->parent->user->loggedin ){
+												
+												$tabs['sponsor-me']['content'] .= '<div class="loadingIframe" style="height: 50px;width: 100%;background-position:50% center;background-repeat: no-repeat;background-image:url(\'' . $this->parent->server->url . '/c/p/live-template-editor-server/assets/loader.gif\');"></div>';
+
+												$tabs['sponsor-me']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:' . $this->parent->plan->iframe_height . 'px;overflow: hidden;"></iframe>';
+											}
+											else{
+												
+												$tabs['sponsor-me']['content'] .='<div class="modal-body">'.PHP_EOL;
+												
+													$tabs['sponsor-me']['content'] .= '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
+														
+														$tabs['sponsor-me']['content'] .= 'You need to log in first...';
+														
+														$tabs['sponsor-me']['content'] .= '<div class="pull-right">';
+
+															$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-success" href="' . wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) . '">Login</a>';
+															
+															$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-info" href="'. wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) .'&action=register">Register</a>';
+														
+														$tabs['sponsor-me']['content'] .= '</div>';
+														
+													$tabs['sponsor-me']['content'] .= '</div>';
+												
+												$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+											}
+
+										$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+										
 									$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
 									
 								$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
-								
-							$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
-						
-						$tabs['sponsor-me']['content'] .='</div>';	
-						
-					$tabs['sponsor-me']['content'] .='</div>';
+							
+							$tabs['sponsor-me']['content'] .='</div>';	
+							
+						$tabs['sponsor-me']['content'] .='</div>';
+					}
 				}
-			}
-			
+				
+				$tabs['sponsor-me']['content'] 	.= '</div>';
+				
 			$tabs['sponsor-me']['content'] 	.= '</div>';
 		}
 		
