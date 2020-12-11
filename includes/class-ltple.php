@@ -120,7 +120,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	
 	public function init_sponsorship(){
 		
-		$this->parent->user->is_sponsorship = $this->parent->programs->has_program('sponsorship', $this->parent->user->ID, $this->parent->user->programs);
+		$this->parent->user->is_sponsorship = $this->parent->programs->has_program('sponsor', $this->parent->user->ID, $this->parent->user->programs);
 		
 		if( is_admin() ){
 
@@ -482,15 +482,15 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		// get tab position
 		
-		$tabs['sponsor-me']['position'] = 3;
+		$tabs['sponsor']['position'] = 3;
 		
 		// get tab name
 		
-		$tabs['sponsor-me']['name'] = 'Sponsor Me';
+		$tabs['sponsor']['name'] = 'Sponsor';
 		
 		// get sponsor content
 		
-		if( $this->parent->profile->tab == 'sponsor-me' ){
+		if( $this->parent->profile->tab == 'sponsor' ){
 		
 			// get sponsorship plans
 			
@@ -555,7 +555,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			
 				wp_add_inline_style( $this->parent->_token . '-sponsor-me', '
 
-					#sponsor-me {
+					#sponsor {
 						
 						margin-top:15px;
 					}
@@ -564,21 +564,21 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 			},10 );
 			
-			$tabs['sponsor-me']['content'] = '<div style="margin:0 15px;">';
+			$tabs['sponsor']['content'] = '<div style="margin:0 15px;">';
 				
-				$tabs['sponsor-me']['content'] .= '<div class="col-xs-12 col-sm-5 pull-right">';
+				$tabs['sponsor']['content'] .= '<div class="col-xs-12 col-sm-5 pull-right">';
 				
-					$tabs['sponsor-me']['content'] .= '<div class="alert alert-info" style="margin: 40px 0px !important;">';
+					$tabs['sponsor']['content'] .= '<div class="alert alert-info" style="margin: 40px 0px !important;">';
 
-						$tabs['sponsor-me']['content'] 	.= 'Sponsor credits can only be used to purchase services on the platform. They are non-refundable & non-exchangeable.';
+						$tabs['sponsor']['content'] 	.= 'Sponsor credits can only be used to purchase services on the platform. They are non-refundable & non-exchangeable.';
 					
-					$tabs['sponsor-me']['content'] 	.= '</div>';
+					$tabs['sponsor']['content'] 	.= '</div>';
 				
-				$tabs['sponsor-me']['content'] 	.= '</div>';
+				$tabs['sponsor']['content'] 	.= '</div>';
 				
-				$tabs['sponsor-me']['content'] .= '<div class="col-xs-12 col-sm-7">';
+				$tabs['sponsor']['content'] .= '<div class="col-xs-12 col-sm-7">';
 
-				$tabs['sponsor-me']['content'] .= '<h3>One time sponsorship</h3>';
+				$tabs['sponsor']['content'] .= '<h3>One time sponsorship</h3>';
 				
 				foreach( $sponsorship_plans as $plan ){
 					 
@@ -598,96 +598,96 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 											
 						$modal_id='modal_'.md5($agreement_url);
 						
-						$tabs['sponsor-me']['content'] .='<div class="row well">';
+						$tabs['sponsor']['content'] .='<div class="row well">';
 							
-							$tabs['sponsor-me']['content'] .='<div class="col-xs-2">';
+							$tabs['sponsor']['content'] .='<div class="col-xs-2">';
 								
-								$tabs['sponsor-me']['content'] .='<i style="font-size:4.5rem;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
+								$tabs['sponsor']['content'] .='<i style="font-size:4.5rem;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
 								
-							$tabs['sponsor-me']['content'] .='</div>';
+							$tabs['sponsor']['content'] .='</div>';
 
-							$tabs['sponsor-me']['content'] .='<div class="col-xs-7">';
+							$tabs['sponsor']['content'] .='<div class="col-xs-7">';
 								
-								$tabs['sponsor-me']['content'] .= $plan['content'];
+								$tabs['sponsor']['content'] .= $plan['content'];
 								
-							$tabs['sponsor-me']['content'] .='</div>';					
+							$tabs['sponsor']['content'] .='</div>';					
 							
-							$tabs['sponsor-me']['content'] .='<div class="col-xs-3 text-center">';
+							$tabs['sponsor']['content'] .='<div class="col-xs-3 text-center">';
 
-								$tabs['sponsor-me']['content'] .='<div class="text-center" style="font-size:19px;font-weight:bold;">';
+								$tabs['sponsor']['content'] .='<div class="text-center" style="font-size:19px;font-weight:bold;">';
 									
-									$tabs['sponsor-me']['content'] .= $currency . $plan['fee'];
+									$tabs['sponsor']['content'] .= $currency . $plan['fee'];
 								
-								$tabs['sponsor-me']['content'] .='</div>';
+								$tabs['sponsor']['content'] .='</div>';
 									
-								//$tabs['sponsor-me']['content'] .='<hr style="margin-top: 7px;margin-bottom: 12px;border-top: 1px solid #dcdcdc;">';	
+								//$tabs['sponsor']['content'] .='<hr style="margin-top: 7px;margin-bottom: 12px;border-top: 1px solid #dcdcdc;">';	
 									
-								$tabs['sponsor-me']['content'] .='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
+								$tabs['sponsor']['content'] .='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#'.$modal_id.'">'.PHP_EOL;
 									
-									$tabs['sponsor-me']['content'] .='Send'.PHP_EOL;
+									$tabs['sponsor']['content'] .='Send'.PHP_EOL;
 
-								$tabs['sponsor-me']['content'] .='</button>'.PHP_EOL;									
+								$tabs['sponsor']['content'] .='</button>'.PHP_EOL;									
 
-								$tabs['sponsor-me']['content'] .='<div class="modal fade" id="'.$modal_id.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'.PHP_EOL;
+								$tabs['sponsor']['content'] .='<div class="modal fade" id="'.$modal_id.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'.PHP_EOL;
 									
-									$tabs['sponsor-me']['content'] .='<div class="modal-dialog modal-lg" role="document">'.PHP_EOL;
+									$tabs['sponsor']['content'] .='<div class="modal-dialog modal-lg" role="document">'.PHP_EOL;
 										
-										$tabs['sponsor-me']['content'] .='<div class="modal-content">'.PHP_EOL;
+										$tabs['sponsor']['content'] .='<div class="modal-content">'.PHP_EOL;
 										
-											$tabs['sponsor-me']['content'] .='<div class="modal-header">'.PHP_EOL;
+											$tabs['sponsor']['content'] .='<div class="modal-header">'.PHP_EOL;
 												
-												$tabs['sponsor-me']['content'] .='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'.PHP_EOL;
+												$tabs['sponsor']['content'] .='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'.PHP_EOL;
 												
-												$tabs['sponsor-me']['content'] .= '<h4 class="modal-title" id="myModalLabel">';
+												$tabs['sponsor']['content'] .= '<h4 class="modal-title" id="myModalLabel">';
 												
-													$tabs['sponsor-me']['content'] .= $plan['title'];
+													$tabs['sponsor']['content'] .= $plan['title'];
 												
-												$tabs['sponsor-me']['content'] .= '</h4>'.PHP_EOL;
+												$tabs['sponsor']['content'] .= '</h4>'.PHP_EOL;
 											
-											$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+											$tabs['sponsor']['content'] .='</div>'.PHP_EOL;
 
 											if( $this->parent->user->loggedin ){
 												
-												$tabs['sponsor-me']['content'] .= '<div class="loadingIframe" style="height: 50px;width: 100%;background-position:50% center;background-repeat: no-repeat;background-image:url(\'' . $this->parent->server->url . '/c/p/live-template-editor-server/assets/loader.gif\');"></div>';
+												$tabs['sponsor']['content'] .= '<div class="loadingIframe" style="height: 50px;width: 100%;background-position:50% center;background-repeat: no-repeat;background-image:url(\'' . $this->parent->server->url . '/c/p/live-template-editor-server/assets/loader.gif\');"></div>';
 
-												$tabs['sponsor-me']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:' . $this->parent->plan->iframe_height . 'px;overflow: hidden;"></iframe>';
+												$tabs['sponsor']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:' . $this->parent->plan->iframe_height . 'px;overflow: hidden;"></iframe>';
 											}
 											else{
 												
-												$tabs['sponsor-me']['content'] .='<div class="modal-body">'.PHP_EOL;
+												$tabs['sponsor']['content'] .='<div class="modal-body">'.PHP_EOL;
 												
-													$tabs['sponsor-me']['content'] .= '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
+													$tabs['sponsor']['content'] .= '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
 														
-														$tabs['sponsor-me']['content'] .= 'You need to log in first...';
+														$tabs['sponsor']['content'] .= 'You need to log in first...';
 														
-														$tabs['sponsor-me']['content'] .= '<div class="pull-right">';
+														$tabs['sponsor']['content'] .= '<div class="pull-right">';
 
-															$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-success" href="' . wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) . '">Login</a>';
+															$tabs['sponsor']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-success" href="' . wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) . '">Login</a>';
 															
-															$tabs['sponsor-me']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-info" href="'. wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) .'&action=register">Register</a>';
+															$tabs['sponsor']['content'] .= '<a style="margin:0 2px;" class="btn-lg btn-info" href="'. wp_login_url( 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] ) .'&action=register">Register</a>';
 														
-														$tabs['sponsor-me']['content'] .= '</div>';
+														$tabs['sponsor']['content'] .= '</div>';
 														
-													$tabs['sponsor-me']['content'] .= '</div>';
+													$tabs['sponsor']['content'] .= '</div>';
 												
-												$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+												$tabs['sponsor']['content'] .='</div>'.PHP_EOL;
 											}
 
-										$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+										$tabs['sponsor']['content'] .='</div>'.PHP_EOL;
 										
-									$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+									$tabs['sponsor']['content'] .='</div>'.PHP_EOL;
 									
-								$tabs['sponsor-me']['content'] .='</div>'.PHP_EOL;
+								$tabs['sponsor']['content'] .='</div>'.PHP_EOL;
 							
-							$tabs['sponsor-me']['content'] .='</div>';	
+							$tabs['sponsor']['content'] .='</div>';	
 							
-						$tabs['sponsor-me']['content'] .='</div>';
+						$tabs['sponsor']['content'] .='</div>';
 					}
 				}
 				
-				$tabs['sponsor-me']['content'] 	.= '</div>';
+				$tabs['sponsor']['content'] 	.= '</div>';
 				
-			$tabs['sponsor-me']['content'] 	.= '</div>';
+			$tabs['sponsor']['content'] 	.= '</div>';
 		}
 		
 		return $tabs;
@@ -1004,7 +1004,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			array(
 			
 				'key' 		=> $this->parent->_base . 'user-programs',
-				'value' 	=> 'sponsorship',
+				'value' 	=> 'sponsor',
 				'compare' 	=> 'LIKE'
 			),
 		));
@@ -1052,7 +1052,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		if(isset($_POST[$this->parent->_base . 'user-programs'])){
 
-			if( in_array( 'sponsorship', $_POST[$this->parent->_base . 'user-programs']) ){
+			if( in_array( 'sponsor', $_POST[$this->parent->_base . 'user-programs']) ){
 				
 				//$this->parent->email->schedule_trigger( 'sponsorship-approved',  $user_id);
 			}

@@ -81,7 +81,7 @@ class LTPLE_Sponsorship_Settings {
 		$settings = [];
 		
 		/*
-		$settings['sponsorship'] = array(
+		$settings['sponsor'] = array(
 		
 			'title'					=> __( 'Sponsorship', $this->plugin->slug ),
 			'description'			=> __( 'Sponsorship settings', $this->plugin->slug ),
