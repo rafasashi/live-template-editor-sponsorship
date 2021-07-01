@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Live Template Editor Sponsorship
- * Version: 1.0.3.3
+ * Version: 1.0.3.4
  * Plugin URI: https://github.com/rafasashi
  * Description: Another Live Template Editor sponsorship.
  * Author: Rafasashi

@@ -648,7 +648,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 											if( $this->parent->user->loggedin ){
 												
-												$tabs['sponsor']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:' . $this->parent->plan->iframe_height . 'px;overflow: hidden;"></iframe>';
+												$tabs['sponsor']['content'] .= '<iframe data-src="' . $agreement_url . '" style="width:100%;position:relative;top:0px;margin-bottom:-10px;bottom:0;border:0;height:80vh;overflow:hidden;"></iframe>';
 											}
 											else{
 												
@@ -1417,7 +1417,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 																		if( $this->parent->user->loggedin ){
 																			
-																			$sponsored_plan.= '<iframe data-src="' . $agreement_url . '" style="width: 100%;position:relative;top:-50px;margin-bottom:-60px;bottom: 0;border:0;height:'.$iframe_height.'px;overflow: hidden;"></iframe>';
+																			$sponsored_plan.= '<iframe data-src="' . $agreement_url . '" style="width:100%;position:relative;top:0px;margin-bottom:-10px;bottom:0;border:0;height:80vh;overflow:hidden;"></iframe>';
 																		}
 																		else{
 																			
