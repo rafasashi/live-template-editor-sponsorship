@@ -50,73 +50,8 @@ class LTPLE_Sponsorship_Settings {
 				$this->parent->settings->tabs[$i]['sponsor-invitation'] = array( 'name' => 'Sponsorship', 'post-type' => 'sponsor-invitation' );
 			}
 		}		
-		
-		add_action('ltple_plugin_settings', array($this, 'plugin_info' ) );
-		
-		add_action('ltple_plugin_settings', array($this, 'settings_fields' ) );
-		
+
 		add_action( 'ltple_admin_menu' , array( $this, 'add_menu_items' ) );	
-	}
-	
-	public function plugin_info(){
-		
-		$this->parent->settings->addons['sponsorship-program'] = array(
-			
-			'title' 		=> 'Sponsorship Program',
-			'addon_link' 	=> 'https://github.com/rafasashi/live-template-editor-sponsorship',
-			'addon_name' 	=> 'live-template-editor-sponsorship',
-			'source_url' 	=> 'https://github.com/rafasashi/live-template-editor-sponsorship/archive/master.zip',
-			'description'	=> 'Sponsorship program including management and purchase of licenses in bulk.',
-			'author' 		=> 'Rafasashi',
-			'author_link' 	=> 'https://profiles.wordpress.org/rafasashi/',
-		);		
-	}
-
-	/**
-	 * Build settings fields
-	 * @return array Fields to be displayed on settings page
-	 */
-	public function settings_fields () {
-
-		$settings = [];
-		
-		/*
-		$settings['sponsor'] = array(
-		
-			'title'					=> __( 'Sponsorship', $this->plugin->slug ),
-			'description'			=> __( 'Sponsorship settings', $this->plugin->slug ),
-			'fields'				=> array(		
-				array(
-					'id' 			=> 'sponsorship_banners',
-					'name' 			=> 'sponsorship_banners',
-					'label'			=> __( 'Sponsorship banners' , $this->plugin->slug ),
-					'description'	=> '',
-					'inputs'		=> 'string',
-					'type'			=> 'key_value',
-					'placeholder'	=> ['key'=>'image title', 'value'=>'url'],
-				),
-			)
-		);
-		*/
-		
-		if( !empty($settings) ){
-			
-			// merge settings
-		
-			foreach( $settings as $slug => $data ){
-				
-				if( isset($this->parent->settings->settings[$slug]['fields']) && !empty($data['fields']) ){
-					
-					$fields = $this->parent->settings->settings[$slug]['fields'];
-					
-					$this->parent->settings->settings[$slug]['fields'] = array_merge($fields,$data['fields']);
-				}
-				else{
-					
-					$this->parent->settings->settings[$slug] = $data;
-				}
-			}
-		}
 	}
 	
 	/**
