@@ -262,6 +262,8 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			
 			// handle invitation acceptation
 			
+			$message = '';
+			
 			if( !empty($_POST['sponsor_invitation_id']) ){
 				
 				if( $invitation_id = intval($_POST['sponsor_invitation_id']) ){
@@ -373,11 +375,11 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 									
 										// output message
 										
-										$_SESSION['message'] ='<div class="alert alert-success">';
+										$message ='<div class="alert alert-success">';
 										
-											$_SESSION['message'] .='Congratulations, thanks to <b>'. ucfirst($sponsor->data->nickname) .'</b> you have successfully unlocked <b>'. ucfirst($plan_title).'</b> for 30 days!';
+											$message .='Congratulations, thanks to <b>'. ucfirst($sponsor->data->nickname) .'</b> you have successfully unlocked <b>'. ucfirst($plan_title).'</b> for 30 days!';
 										
-										$_SESSION['message'] .='</div>';
+										$message .='</div>';
 									
 										// send notification to sponsor
 										
@@ -435,20 +437,20 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 								}
 								else{
 									
-									$_SESSION['message'] ='<div class="alert alert-warning">';
+									$message ='<div class="alert alert-warning">';
 									
-										$_SESSION['message'] .='Expired invitation, please contact billing support...';
+										$message .='Expired invitation, please contact billing support...';
 									
-									$_SESSION['message'] .='</div>';
+									$message .='</div>';
 								}
 							}
 							else{
 								
-								$_SESSION['message'] ='<div class="alert alert-info">';
+								$message ='<div class="alert alert-info">';
 								
-									$_SESSION['message'] .='You have already unlocked this plan using this invitation, use it again in <b>' . ( 30 - $dDiff->days ) . ' days</b>...';
+									$message .='You have already unlocked this plan using this invitation, use it again in <b>' . ( 30 - $dDiff->days ) . ' days</b>...';
 								
-								$_SESSION['message'] .='</div>';								
+								$message .='</div>';								
 							}
 						}
 					}
@@ -456,24 +458,31 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 			}
 			elseif( !$this->parent->user->loggedin && !empty($this->user_email) ){
 				
-				$_SESSION['message'] = '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
+				$message = '<div style="font-size:20px;padding:20px;margin:0px;" class="alert alert-warning">';
 					
-					$_SESSION['message'] .= 'An invitation is waiting for you but you need to log in first...';
+					$message .= 'An invitation is waiting for you but you need to log in first...';
 					
-					$_SESSION['message'] .= '<div class="pull-right">';
+					$message .= '<div class="pull-right">';
 						
 						if(!empty($this->login_url)){
 						
-							$_SESSION['message'] .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->login_url . '">Let\'s go!</a>';
+							$message .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->login_url . '">Let\'s go!</a>';
 						}
 						elseif(!empty($this->register_url)){
 						
-							$_SESSION['message'] .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->register_url . '">Let\'s do it!</a>';
+							$message .= '<a style="margin:0 2px;" class="btn-lg btn-primary" href="' . $this->register_url . '">Let\'s do it!</a>';
 						}
 						
-					$_SESSION['message'] .= '</div>';
+					$message .= '</div>';
 					
-				$_SESSION['message'] .= '</div>';				
+				$message .= '</div>';				
+			}
+			
+			if( !empty($message) ){
+				
+				// TODO pass message for guest session
+				
+				$this->parent->session->update_user_data('message',$message);
 			}
 		}
 	}
@@ -1864,8 +1873,9 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 	 */
 	public function admin_enqueue_styles ( $hook = '' ) {
 		
-		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-admin' );
+		//wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
+		//wp_enqueue_style( $this->_token . '-admin' );
+	
 	} // End admin_enqueue_styles ()
 
 	/**
