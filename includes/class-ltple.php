@@ -77,6 +77,13 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		// add shortcodes
 		
 		add_shortcode('ltple-sponsorship-notification', array( $this , 'get_inbox_notification' ) );
+	
+		add_action('ltple_newsletter_campaign_triggers', function($triggers){
+			
+			$triggers['ltple_sponsorship_approved'] = 'Sponsorship Approved';
+			
+			return $triggers;
+		});
 	}
 	
 	public function handle_sponsor_payment(){
@@ -1061,7 +1068,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 
 			if( in_array( 'sponsor', $_POST[$this->parent->_base . 'user-programs']) ){
 				
-				//$this->parent->email->schedule_trigger( 'sponsorship-approved',  $user_id);
+				do_action('ltple_sponsorship_approved',$user_id);
 			}
 		}
 	}
