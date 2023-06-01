@@ -114,7 +114,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 		
 		if(  !is_null($atts['fee']) && is_numeric($atts['fee']) ){
 			
-			$content .= '<div style="background:#fff;color:' . $this->parent->settings->mainColor . ';padding:10px;border-radius:6px;">';
+			$content .= '<div style="background:#fff;color:{{ theme.css.main_color }};padding:10px;border-radius:6px;">';
 			
 				$content .= '<b>' . $atts['currency'] . $atts['fee'] . '</b> credits added to your account!';
 			
@@ -618,7 +618,7 @@ class LTPLE_Sponsorship extends LTPLE_Client_Object {
 							
 							$tabs['sponsor']['content'] .='<div class="col-xs-2">';
 								
-								$tabs['sponsor']['content'] .='<i style="font-size:4.5rem;color:' . $this->parent->settings->mainColor . ' !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
+								$tabs['sponsor']['content'] .='<i style="font-size:4.5rem;color:{{ theme.css.main_color }} !important" class="'.$plan['icon'].'" aria-hidden="true"></i>';
 								
 							$tabs['sponsor']['content'] .='</div>';
 
